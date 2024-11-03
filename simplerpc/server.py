@@ -12,12 +12,16 @@ server.registerMethod(add)
 server.registerMethod(sub)
 
 class Mathematics:
+    #dodano anotacje do metod - inaczej serwer ich nie widział
+    #self jest konieczne
     @classmethod
     def mul(self,a, b):
         return a*b
 
+    #dodano anotacje do metod - inacej serwer ich nie widział
+    #self jest konieczne
     @classmethod
-    def div(a, b):
+    def div(self,a, b):
         return a/b
 
 server.registerInstance(Mathematics)

@@ -39,6 +39,7 @@ class RPCServer:
         try:
             # Regestring the instance's methods
             for functionName, function in inspect.getmembers(instance, predicate=inspect.ismethod):
+                #tylko do celów debugowania
                 print(functionName, function)
                 if not functionName.startswith('__'):
                     self._methods.update({functionName: function})
@@ -76,19 +77,22 @@ class RPCServer:
     def run(self) -> None:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.bind(self.address)
+            #dodanie timeout, obsługa poniżej w pętli serwera
+            sock.settimeout(0.2)
             sock.listen()
 
             print(f'+ Server {self.address} running')
-            while True:
-                try:
-                    client, address = sock.accept()
+            try:
+                while True:
+                    try:
+                        client, address = sock.accept()
 
-                    Thread(target=self.__handle__, args=[client, address]).start()
-
-                except KeyboardInterrupt:
-                    print(f'- Server {self.address} interrupted')
-                    break
-
+                        Thread(target=self.__handle__, args=[client, address]).start()
+                    except socket.timeout:
+                        pass
+            except KeyboardInterrupt:
+                print(f'- Server {self.address} interrupted')
+            
 
 
 class RPCClient:
