@@ -14,15 +14,18 @@ socket.bind("tcp://*:5555")
 try:
 
     while True:
-        #  Wait for next request from client
-        message = socket.recv()
-        print(f"Received request: {message}")
-
+        try:
+            #  Wait for next request from client
+            message = socket.recv(flags=zmq.NOBLOCK)
+            
+            print(f"Received request: {message}") 
+            #  Send reply back to client
+            socket.send_string("World")
+        except zmq.Again:
+            print ("No message received yet")
         #  Do some 'work'
         time.sleep(1)
-
-        #  Send reply back to client
-        socket.send_string("World")
+       
 
 except KeyboardInterrupt:
     print('!!FINISH!!')
