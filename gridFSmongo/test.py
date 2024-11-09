@@ -72,3 +72,26 @@ if file_data:
 else:
     print("No file found")
 
+# Upload a file with metadata
+with open('../test.wav', 'rb') as file_data:
+    file_id = fs.put(file_data, filename='test.wav', description='Sample wav with tags', 
+                     tags=['example', 'wav', 'long','test'])
+
+print(f"File uploaded with metadata, file_id: {file_id}")
+
+
+
+file_data = fs.find_one({'tags': {'$in':['wav','long']}})
+
+if file_data:
+    print(f"Found file with ID: {file_data._id} and filename: {file_data.filename}")
+else:
+    print("No file found")
+
+if file_data:
+    # Save the file to disk
+    with open('downloaded.wav', 'wb') as output_file:
+        output_file.write(file_data.read())
+    print("File downloaded successfully")
+else:
+    print("File not found")
