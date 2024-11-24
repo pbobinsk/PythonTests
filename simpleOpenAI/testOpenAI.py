@@ -10,24 +10,24 @@ logging.basicConfig()
 logger = logging.getLogger(__name__)
 logger.setLevel(os.getenv("LOG_LEVEL", "DEBUG"))
 
-logger.debug(f"OPEN_API_KEY={os.environ['OPENAI_API_KEY']}")
-
 
 def testOpenAI():
     client = OpenAI()
-
+    
+#    print(list(map(lambda x:x.id,client.models.list())))
+    
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
             {
                 "role": "user",
-                "content": "Napisz po polsku haiku o programistach Cobola."
+                "content": "Napisz po polsku haiku o programistach brainfuck."
             }
         ]
     )
 
-    data = completion.choices[0].model_dump_json(indent=3)
+    data = completion.choices[0].message.content
     print(data) 
 
 
