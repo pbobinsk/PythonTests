@@ -11,28 +11,43 @@ logger = logging.getLogger(__name__)
 logger.setLevel(os.getenv("LOG_LEVEL", "DEBUG"))
 
 
-def testOpenAI():
-    client = OpenAI()
-    
-#    print(list(map(lambda x:x.id,client.models.list())))
-    
-    completion = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {
-                "role": "user",
-                "content": "Napisz po polsku haiku o programistach brainfuck."
-            }
-        ]
-    )
+class OpenAI_Wrapper:
+    def __init__(self):
+        self.client = OpenAI()
 
-    data = completion.choices[0].message.content
-    print(data) 
+    def list_models(self):
+        return list(map(lambda x:x.id,self.client.models.list()))
 
+    def completionTest(self,prompt="Escreva haihu sobre programadores em porugues europeu"):    
+        completion = self.client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+        )
+        return completion.choices[0].message.content
 
+    def audioTest(self,audioFilePath):
+        audio_file= open(audioFilePath, "rb")
+        transcription = self.client.audio.transcriptions.create(
+            model="whisper-1", 
+            file=audio_file
+        )
+        return transcription.text
 
 if __name__ == "__main__":
-    print('Test OpenAI API')
-    testOpenAI()
+    logger.info('Test OpenAI API')
+    openapiWrapper = OpenAI_Wrapper()
+    logger.debug('Wrapper created')
+    logger.info('Models:')
+    logger.info(openapiWrapper.list_models())
+    logger.info('Text test:')
+    logger.info(openapiWrapper.completionTest())
+    logger.info('Audio test:')
+    logger.info(openapiWrapper.audioTest('harvard.wav'))
+    logger.info('Test OpenAI API done.')
 
