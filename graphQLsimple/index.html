@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GraphQL Client</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ccc;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>GraphQL Client</h1>
+    <textarea id="query" placeholder="Enter your GraphQL query or mutation here">
+mutation {
+    createUser(name: "Bob", email: "bob@example.com") {
+        user {
+            name
+            email
+        }
+    }
+}
+    </textarea>
+    <button id="sendQuery">Send Query</button>
+    <h2>Response:</h2>
+    <pre id="response"></pre>
+
+    <script>
+        const endpoint = "http://127.0.0.1:5000/graphql";
+
+        document.getElementById("sendQuery").addEventListener("click", async () => {
+            const query = document.getElementById("query").value;
+            const responseBox = document.getElementById("response");
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ query })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                responseBox.textContent = JSON.stringify(result, null, 2);
+            } catch (error) {
+                responseBox.textContent = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>
