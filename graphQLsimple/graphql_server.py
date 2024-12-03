@@ -47,6 +47,3 @@ def graphql_server():
     data = request.get_json()
     result = schema.execute(data.get("query"))
     return jsonify(result.data)
-
-if __name__ == "__main__":
-    app.run(debug=True)

@@ -1,0 +1,3 @@
+FLASK_APP=graphql_server.py
+FLASK_ENV=development
+FLASK_DEBUG=1
