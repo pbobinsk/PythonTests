@@ -18,15 +18,15 @@ class CezarKoder(Koder):
         self.klucz = klucz
         
     # gdy chcemy ograniczyć się do liter, _ separuje wyrazy
-    def encode(self,tekstJawny):
-        #return ''.join(self.slownik[l] if l in self.slownik.keys() else '_' for l in tekstJawny)
-        # albo bez słownika
-        return ''.join(' ' if l not in self.alfabet else chr(ord(l) + self.klucz) if ord(l) + self.klucz <= ord('Z') else chr(ord(l) + self.klucz - ord('Z')) for l in tekstJawny)
+    # def encode(self,tekstJawny):
+    #     #return ''.join(self.slownik[l] if l in self.slownik.keys() else '_' for l in tekstJawny)
+    #     # albo bez słownika
+    #     return ''.join('_' if l not in self.alfabet else chr(ord(l) + self.klucz) if ord(l) + self.klucz <= ord('Z') else chr(ord(l) + self.klucz - ord('Z')) for l in tekstJawny)
 
 
     # gdy chcemy ograniczyć się do liter, _ separuje wyrazy
-    def decode(self,tekstTajny):
-        #return ''.join(self.odwrotnySlownik[w] if w in self.odwrotnySlownik.keys() else ' ' for w in tekstTajny)
-        # albo bez słownika
-        return ''.join(' ' if l not in self.alfabet else chr(ord(l) - self.klucz) if ord(l) - self.klucz >= ord('A') else chr(ord(l) - self.klucz + ord('A')) for l in tekstTajny)
+    # def decode(self,tekstTajny):
+    #     #return ''.join(self.odwrotnySlownik[w] if w in self.odwrotnySlownik.keys() else ' ' for w in tekstTajny)
+    #     # albo bez słownika
+    #     return ''.join(' ' if l not in self.alfabet else chr(ord(l) - self.klucz) if ord(l) - self.klucz >= ord('A') else chr(ord(l) - self.klucz + ord('A')) for l in tekstTajny)
 
