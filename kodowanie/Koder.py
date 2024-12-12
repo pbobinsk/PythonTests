@@ -1,5 +1,6 @@
 class Koder():
     
+    # dla metod słownikowych
     slownik = {}
     odwrotnySlownik = {}
 
