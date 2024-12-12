@@ -10,8 +10,8 @@ payload_data = {
 }
 
 # you'll need to create or update the path to correspond to an available key
-private_key = open('.ssh/id_rsa', 'r').read()
-key = serialization.load_ssh_private_key(private_key.encode(), password=b'')
+private_key = open('../../.ssh/id_rsa', 'r').read()
+key = serialization.load_ssh_private_key(private_key.encode(), password=b'qazxsw')
 
 token = jwt.encode(payload=payload_data, key=key, algorithm='RS256')
 print(token)
