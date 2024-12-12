@@ -1,7 +1,7 @@
 import jwt
 
 
-token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MjQyIiwibmFtZSI6Ikplc3NpY2EgVGVtcG9yYWwiLCJuaWNrbmFtZSI6Ikplc3MiLCJleHAiOjE3MzM5OTA5OTB9.4_4ZnhA0qNKx_kCWuMTwfkcfMf2WA2V2mLE2a85xzv0'
+token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MjQyIiwibmFtZSI6Ikplc3NpY2EgVGVtcG9yYWwiLCJuaWNrbmFtZSI6Ikplc3MiLCJleHAiOjE3MzM5OTcwNTV9.m5JAHW0kDFYeSsKNMTCqfNwICKS33SBpohvS08AHsQ4'
 
 secret = 'my_super_secret'
 header_data = jwt.get_unverified_header(token)
