@@ -1,19 +1,4 @@
-a = {'a': 1, 'b' : '2', 'c' :3, 'd' : 4}
 
-print(a)
-
-b = {k:v for (v,k) in a.items()}
-
-print(b)
-
-import collections.abc
-
-print(isinstance((), collections.abc.Sequence))
-
-# Vamos salvar a conversa em um arquivo Markdown (.md)
-
-# Conteúdo da conversa
-content = """
 # Conversa sobre Fado Menor
 
 ## Harmonia típica no Fado Menor
@@ -77,14 +62,3 @@ No **fado menor**, a linha de baixo é essencial para criar o caráter emotivo e
 ### Notas importantes:
 1. O baixo não precisa ser extremamente técnico — no fado, a função do baixo é **suportar o acompanhamento harmônico e reforçar o sentimento de melancolia**.
 2. Muitas vezes, o contrabaixo ou a guitarra de acompanhamento utilizam **arpejos** ou pequenos **padrões descendentes**, especialmente nos finais de frases para reforçar a cadência.
-"""
-
-# Nome do arquivo
-file_path = "./Fado_Menor_Progressoes.md"
-
-# Criar e salvar o arquivo
-with open(file_path, "w", encoding="utf-8") as file:
-    file.write(content)
-
-file_path
-
