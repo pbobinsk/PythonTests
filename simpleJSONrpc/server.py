@@ -1,6 +1,8 @@
 from jsonrpcserver import Success, method, serve, Result, Error
 import logging
 
+logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
+
 @method
 def ping():
     return Success("pong")

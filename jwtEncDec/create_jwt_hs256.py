@@ -13,7 +13,7 @@ payload_data = {
     'exp':dt
 }
 
-secret = 'my_super_secret'
+secret = 'TwójBardzoSekretnyKlucz123451234567890'
 token = jwt.encode(payload=payload_data, key=secret)
 print(token)
 
