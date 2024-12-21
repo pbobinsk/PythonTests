@@ -18,7 +18,7 @@ class OpenAI_Wrapper:
     def list_models(self):
         return list(map(lambda x:x.id,self.client.models.list()))
 
-    def completionTest(self,prompt="Escreva haihu sobre programadores em porugues europeu"):    
+    def completionTest(self,prompt="Escreva haiku sobre programadores em polaco"):    
         completion = self.client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
