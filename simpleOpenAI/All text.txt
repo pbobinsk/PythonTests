@@ -1,0 +1,111 @@
+﻿Nowy postęp w wykrywaniu obecności larw Hylotrupes bajulus L. w praktycznych warunkach konstrukcji dachów metodą AE – rejestracja dwukanałowa
+Adam Krajewski, Piotr Bilski, Piotr Bobiński, Piotr Witomski
+
+1. Introduction 
+      Metoda Detection of Acoustic Emission (AE)  cieszy się kilku dekad zainteresowaniem przy wykrywaniu i badaniu życia owadów niszczących drewno. Od ponad czterech dekad prowadzone są badania nad wykrywaniem old house borer (Hylotrupes bajulus L.) przy u życiu Detection of Acoustic emission (AE) [Kerner i in. 1980, Pallaske 1988, Plinke 1991, Schofield 2011, Krajewski et al. 2012, Brandstetter et al. 2015, Creemers 2015,  Bilski et. al. 2017, Nowakowska et al. 2017, Krajewski et al. 2020, Krajewski et al. 2024, Krajewski et al. 2024]. Ten gatunek chrząszcza jest bardzo rozprzestrzeniony na świecie [Becker 1949, Becker 1949,  Becker 1970] a w Europie środkowej i północnej powoduje największe zagrożenie dla drewnianych konstrukcji budowlanych [Wichmand 1941, Becker 1949, Becker 1949, Krajewski 1995], pomimo obserwowanego zmniejszania liczby budynków opanowanych w niektórych regionach Europy w ostatnim czasie [Dominik 2005]. 
+      Prowadzone były laboratoryjne badania wpływu temperatury na możliwość rejestrowania obecności old house borer larvae w drewnie metodą AE [Palaske 1986, Creemers 2015, Nowakowska et al. 2017, Krajewski et al. 2020]. Prowadzono także badania laboratoryjne nad wpływem wielkości old house borer larvae [Krajewski et al. 2022, Krajewski et al. 2024] i ich oddaleniem od czujnika aparatury pomiarowej [Krajewski et al. 2022] na skuteczność metody AE. Podjęto z sukcesem także próby wypracowania odpowiedniego narzędzia do oceny skuteczności metody AE w wykrywaniu old house borer larvae, tj. poprzez zliczanie podokresów aktywności larw, liczby ugryzień a zwłaszcza calculated energy powstającej w wyniku borowania drewna [Bilski et al.2017, Krajewski et al. 2020].
+      Od wielu lat podejmowano również badania nad rejestrowaniem za pomocą metody AE innych owadów rozwijających się w drewnie konstrukcji budowlanych, między innymi   Anobiidae [Esser and Vanstaalduinen 1999, Creemers 2015] oraz termitów [Fujii et al. 1989, Mankin et al. 1996 ,  Lemasteret al. 1997, Fujii et al. 1999,  Mankin et al. 2002, Nocero 2003,  Dunegan 2005, Mankin and Moore 2010]. Podejmowano również badania nad wykrywaniem metodą AE innych ekspansywnych gatunków Cerambycidae (Coleoptera) rozwijających się w pniach drzew: Asian longhorned beetle (Anaplophora glabripennis Motschulsky) [Becker 2000, Schofield 2011] and  Neoplocaederus ferrugineus (L.) [Maruthadurai etal. 2022], oraz groźnym szkodnikiem palm Rhynchophorus ferrugineus (Olivier) (Coleoptera: Curculionidae) [Mankin et al. 2016].
+      W przypadku old house borer szczególnie ważna jest ocena możliwości skutecznego zastosowania  metody AE w warunkach praktyki budowlanej, to jest na dużych konstrukcjach w zmieniających się warunkach termicznych w trakcie lata. W jakiej minimalnej odległości od miejsca bytowania larwy w drewnie konstrukcji musi być umieszczony czujnik? Jeszcze ważniejszym zagadnieniem jest wyeliminowanie dźwięków tła (skrzypienie konstrukcji pod wpływem wiatru, odgłosów samochodów, skakania ptaków na poszyciu dachu lub spadających obiektów, np. gałązek czy szyszek z drzew itp.), które mogą być rejestrowane wraz z odgłosami żerowania larw. W celu wyeliminowania tych przypadkowych odgłosów tła przeprowadzono próby zastosowania metody AE w warunkach  rejestracji dwukanałowej.
+.
+2. Materials and methods
+      Prace doświadczalne przeprowadzono na niewielkiej konstrukcji dachu garażu (nr I - ryc. 1) o rozpiętości 400 cm i wysokości 70 cm oraz dwóch większych konstrukcjach dachów domów jednorodzinnych o szerokości 810 cm (nr II  - ryc. 2) i 850 cm oraz wysokości 500 cm każda. Pomiary na więźbach dachów II (ryc. 2) i III przeprowadzono na górnych partiach konstrukcji ponad poddaszem. Krokwie konstrukcji nr I miały przekrój 7 x 14 cm. Krokwie konstrukcji II i II miały przekrój 10 x 18 cm. Wszystkie dachy były pokryte blachodachówką.
+      Rejestracja odgłosów żerowania larw w drewnie metodą AE została przeprowadzona przy zastosowaniu systemu doświadczalnego, opisanego szerzej we wcześniejszych publikacjach [Krajewski et al. 2012, Bilski et al. 2017, Nowakowska et al. 2017, Krajewski et al. 2020, Krajewski et al. 2022, Krajewski et. 2024]. Sygnały emisji akustycznej rejestrowano za pomocą sprzętu składającego się z czujnika piezoelektrycznego (CCLD model 4507-B-005, Bruel & Kjaer), zewnętrznej karty dźwiękowej (E-MU Tracker Pre, Creative) oraz laptopa (Lenovo Ideapad) z systemem operacyjnym Windows 7 system i oprogramowanie Adobe Audition. s. Czujnik współpracował poprzez konwerter (jaki) z kartą dźwiękową podłączoną bezpośrednio do komputera przez USB 2.0. Zastosowana częstotliwość próbkowania wynosiła 44,1 kHz przy rozdzielczości 16 bitów. Sygnały były rejestrowane przez kartę dźwiękową i prezentowane w formie zapisu graficznego na monitorze komputera. Sygnały rejestrowano jako poziom amplitudy sygnału w stosunku do maksymalnej możliwej do zarejestrowania amplitudy przez kartę dźwiękową, czyli amplitudę, jaką maksymalnie można osiągnąć regulacja przetwornika analogowo-cyfrowego. 
+      Rejestrację przeprowadzono metodą dwukanałową, w sposób umożliwiający usunięcie przypadkowych dźwięków tła, które nie pochodzą od  longhorn beetle larvae. TU OPIS POSTĘPOWANIA PRZY USUWANIU DŹWIĘKÓW TŁA
+      Średnia gęstość wood of Scots pine (Pinus sylvestris L.) użytych elementów doświadczalnych wynosiła 485 - 510 - 545 kg/m3. Drewniane elementy użyte do doświadczeń  zawierały ½ - ¾  of sapwood. Doświadczenia obejmowały 2 etapy. Założono, że użyte  w doświadczeniach elementy drewniane odpowiednio przymocowane do construction będą przejmowały sygnały elektroakustyczne nie tylko z ich wnętrza, ale również z roof truss and roof covering. Każdorazowo używano pary drewnianych elementów (element kontrolny C bez larw i jeden z elementów A, B, D i E z larwami). Obsadzono larwy w poszczególnych klockach o następującej masie: A – 0.064 g i 0.015 g, B – 0,053 i 0.016 g, D – 0.044 g i 0.024 g oraz E – 0.027 g i 0.025 g. Założono, że akustyczny efekt żerowania larw w elementach A, B, D i E nie przenosi się na element C, który zbiera tylko wszelkie przypadkowe odgłosy tła. Do promieniowego przekroju elementów drewnianych mocowano czujniki piezoelektryczne za pomocą smaru firmy GE Bayer Silicone
+      W okresie lipiec / sierpień 2021 r. przeprowadzono próby dwukanałowego rejestrowania aktywności longhorn beetle larvae (Hylotrupes bajulus L.) w kontrolowanych warunkach na konstrukcjach dachów. Jako kontrolowane warunki rozumiano znajomość obecności larw spuszczela w drewnie (liczba larw i ich masa). W tym celu umieszczano parami drewniane elementy z larwami i taki sam element bez larw wmontowane w konstrukcje dachów w taki sposób, żeby  aparatura AE odbierała wszelkie sygnały akustyczne z konstrukcji dachu i poszycia dachu. Jako wszelkie sygnały rozumiano odgłosy żerowania larw oraz skrzypienie drewnianej konstrukcji i odgłosy uderzeń w poszycie dachu (skakanie ptaków, uderzenie spadających gałązek i szyszek itp.). Longhorn beetle larvae pochodziły z hodowli prowadzonej in laboratory of Warsaw University of Life Sciences – SGGW.
+      W pierwszym etapie sprawdzano skuteczność systemu na jednej niewielkiej konstrukcji dachu (dach nr I) i 4 elementach z larwami. Rejestrowano dwukanałowo sygnały akustyczne z drewnianych klocków o wymiarach  5 x 10 x 20 cm (ryc. 1). Zostały one przymocowane przy użyciu pojedynczych bar clamps do 2 sąsiednich segmentów  konstrukcji dachu pokrytego blachodachówką. Jeden klocek (C jako kontrola) nie zawierał żywych larw, w każdym pozostałym (A, B, D i E)   umieszczono po 2 larwy spuszczela w wywierconych otworach in sapwood o średnicy odpowiadającej średnicy ich ciał. Odstęp pomiędzy otworami z larwami wynosił 3-4 cm. Otwory zostały zablokowane płytką z przezroczystego tworzywa sztucznego, przymocowanego pineskami tak, żeby larwy nie odwróciły się i nie wypadły z drewna. Pomiary przeprowadzono po 2 tygodniach od wprowadzenia larw do drewna, kiedy upewniono się, że larwy wgryzły się w drewno. Każdorazowo do pomiarów elektroakustycznych umieszczano parę klocków (element C bez larw i jeden z czterech elementów A, B, D, E z larwami). Czujniki umieszczono na powierzchni klocków 5 x 20 cm pod miejscem umieszczenia larw (ryc. 1).
+
+Ryc. 1. Pomiary w pierwszym etapie doświadczeń na konstrukcji dachu nr I – widoczne są miejsca umieszczenia czujników. C oznacza klocek bez larw. Na drugim klocku z larwami widoczne są 4 pineski przytwierdzające przezroczystą płytkę ze sztucznego  tworzywa do drewna zaślepiającą otwór z larwą
+      Po upewnieniu się o skuteczności metodyki w pierwszym etapie przystąpiono do drugiego etapu. W drugim etapie przeprowadzono doświadczenia nad rejestracją sygnałów akustycznych na 3 konstrukcjach dachów. Rejestrację na każdym dachu prowadzono na 4 drewnianych elementach (A, B, D i E) z larwami i elemencie kontrolnym C bez larw. Każdorazowo umieszczano po kolei parami te same zestawy elementów pomiarowych na kolejnych dachach. Wielkość elementów wynosiła 5 x 10 x 220 cm. Po 2 larwy zostały umieszczone wywierconych otworach in sapwood na powierzchni 5 x 10 cm w każdym z 4 elementów. W poszczególnych elementach użyto odpowiednio tych samych larw jak w klockach w pierwszym etapie doświadczenia. Odstęp pomiędzy otworami z larwami wynosił 3-4 cm. Otwory zamknięto płytkami z przezroczystego tworzywa sztucznego i odczekano do wborowania się larw w drewno. Każdorazowo umieszczano na konstrukcji dachu parę elementów (element C bez larw i jeden z elementów A, B, D i E z larwami). Elementy zostały przymocowane do sąsiednich rafters. Każdy element został przymocowany przy użyciu jednej pary of  bar clamps (ryc. 2). Pomiary zostały przeprowadzono w punktach na środku powierzchni 5 x 220 cm w odstępach co 50 cm poczynając od punktu pod miejscem obsadzenia larwy i w analogicznych punktach na elemencie kontrolnym C. Odległość pomiędzy sąsiednimi  rafters i przytwierdzonymi do nich elementami z larwami wynosiła 70-75 cm. Założono, że akustyczny efekt żerowania larw w elementach A, B, D i E nie przenosi się na element C, który zbiera tylko wszelkie odgłosy tła.
+      We wszystkich przypadkach pierwszego i drugiego etapu czujniki zostały posmarowane GE Bayer Silicones i silnie dociśnięte do drewna gumowymi opaskami do drewna Rejestracja sygnałów akustycznych na wszystkich 3 konstrukcjach dachów została przeprowadzona przy temperaturach powietrza na poddaszu na poziomie 20 - 40°C, warunkującej aktywność larw (Creemers 2015, Krajewski i in. 2017, Krajewski i in 2020).
+      
+
+Ryc. 2. Drugi etap doświadczeń na konstrukcji dachu nr II i dużych elementach– widoczne są elementy przypięte do krokwi, dolne ściski stolarskie i przewody prowadzące do czujników. C oznacza element bez larw
+UWAGA: dolny pas powierzchni na ryc. 2 trzeba uciąć bo widoczna jest rejestracja jednokanałowa, albo wymienić na zdjęcie laptopa z dwukanałowym zapisem (lepszy wariant – do zrobienia)
+      W warunkach praktyki budowlanej w grę wchodzi szybka i nieskomplikowana wizualna ocena efektów rejestracji obecności larw w drewnie konstrukcji. Zapis oceniany jest na ekranie laptopa. Z tego względu wykrywalność larw oceniono wizualnie na podstawie zarejestrowanych zapisów dla każdego punktu pomiarowego w czterech elementach na każdej z trzech konstrukcji dachu. Przyjęto w ocenie następującą skalę: brak zapisu -, 1-2 widoczne sygnały +, 3-5 sygnałów ++, powyżej 5 sygnałów +++.
+
+3. Results
+OPIS  WYNIKÓW NAD ZDEJMOWANIEM TŁA NA NIEWIELKICH KLOCKACH + ILUSTRACJA EFEKTU– RYC. 3 I OPIS  WYNIKÓW NAD ZDEJMOWANIEM TŁA Z DUŻYCH ELEMENTÓW + ILUSTRACJAEFEKTU  - RYC. 4.
+
+      Wyniki rejestracji wykrywalności larw metodą AE w czterech elementach na trzech konstrukcjach dachów przedstawiono w tabeli 1.
+Tabela 1.
+Wyniki rejestracji wykrywalności larw metodą AE przy wizualnej ocenie
+Element0 cm50 cm100 cm150 cm200 cmKonstrukcja nr I
+A+++++++++++?B++++++++++++-D++++++++++++E+++++++++Konstrukcja nr II
+A+?-++B+++?+++?+++D+++++++++++E+++++-+++++Konstrukcja nr III
+A+++++++-B+++++++++++D++++++++++++++E+++++++++
+UWAGA: TAM, GDZIE NIE ODNALAZŁEM ZAPISÓW, W TABELI UMIEŚCIŁEM ZNAK ”?”. DO ODNALEZIENIA.
+4. Discussion
+DYSKUSJA EFEKTÓW ZDEJMOWANIA TŁA, PONIŻEJ DYSKUSJA DO TABELI 1. DO ZROBIENIA
+      Na wizualną ocenę na ekranie laptopa zapisu obecności owadów wpływają aktywność larw i oddalenie czujnika od miejsca żerowania larw. Wraz ze wzrostem odległości miejsca umieszczenia czujnika na powierzchni drewna od miejsca żerowania larwy wysokość zapisu rejestracji (jak to nazwać inaczej?) ulegała zmniejszeniu na skutek zmniejszenia się wielkości energii umownej, co wcześniej stwierdzono w warunkach badań laboratoryjnych [Krajewski et al. 2022].
+      Przy normalnych dziennych wahaniach temperatura jest głównym czynnikiem wpływającym na aktywność owadów [Pallaske 1986, Creemers 2015, Nowakowska et al. 2017, Krajewski et al. 2020], chociaż w przypadku poszczególnych larw Hylotrupes stwierdzono znaczące fazy bezczynności. Temperatura sama w sobie jest bardziej czynnikiem wpływającym na aktywność owadów niż konkretna pora dnia (zgodnie z wewnętrznym rytmem dobowym). Im wyższa temperatura, tym więcej zdarzeń AE. Wydaje się, że nie ma wyraźnego rytmu dobowego innego niż wpływ temperatury [Creemers 2015]. Pallaske [1986] trzymał swoje larwy w zmiennych warunkach: 12 godzin 18 °C i 12 godzin 25 °C, a w tych warunkach zmierzono wyraźnie większą aktywność podczas cieplejszych faz.
+With normal daily variations, temperature is the main influencing factor regarding insect activity [Pallaske 1986, Creemers 2015, Nowakowska et al. 2017, Krajewski et al. 2020], thoughfor individual Hylotrupes-larvae, significant phases of inactivity were found. Temperature itself is more of an influencing factor regarding insect activity than the specific time of day (as urged by internal circadian rhythms). The higher the temperature, the more AE events. There seems to be no apparent daily rhythm other than the influence of temperature [Creemers 2015]. Pallaske [1986] in laboratory tests kept his larvae under alternating conditions of 12 hours 18 °C and 12 hours 25 °C, and in these circumstances measured clearly more activity during the warmer phases.
+      Jednak w naszych badaniach w warunkach poddasza budynków latem temperatura powietrza w Warszawie wykazywała znacznie większe wahania i znacznie większą ekstremalną wartość w końcu dnia dochodząc na poddaszach budynków wykorzystanych w badaniach w niektóre dni nawet do poziomu 40°C. Tym samym po trzytygodniowym okresie takich temperatur temperatura wewnątrz drewna musiała wzrosnąć ponad poziom 30°C. Jak wynika z naszych wcześniejszych doświadczeń laboratoryjnych [Krajewski et al. 2020] już temperatura 36°C powoduje minimalną aktywność wyrażającą się numer of bites a temperatura 40°C całkowicie wyklucza aktywność larw. Przy tym już temperatura 34°C powoduje drastyczny spadek energii umownej ugryzień [Krajewski et al. 2020]. Warunki te mogły powodować okresowe milknięcie larw, na przykład w przypadku konstrukcji II, elementy A i E, odległość 100 cm czy konstrukcji I (element B) i konstrukcji III (element A) dla odległości 200 cm. 
+
+5. Conclusions
+
+TU: WNIOSKI ZE SKUTECZNOŚCI DWUKANAŁOWEGO REJESTROWANIA
+
+Pomimo dość drastycznych warunków, jakie panowały na poddaszach w trakcie rejestracji, uzyskano zadowalającą wykrywalność larw w drewnie metodą AE w praktyce budowlanej, nawet przy oddaleniu czujnika 200 cm od miejsca żerowania larw.
+
+References
+G. Becker, Beiträge zur Ökologie der Hausbockkäfer-Larven, Zeitschrift für angewandte Entomologie, 31 (1949), 135-174.
+
+G. Becker, Ergebnisse der Hausbock-Forschung, Anzeiger für Schädlingskunde 7(22) (1949), 97 – 102.
+H. Becker 1970, Über die Verbreitung des Hausbockkäfers Hylotrupes bajulus (L.) Serville (Col., Cerambycidae), Zeischrift für angewandte Entomologie 67 (1949), 99- 102.
+
+H. Becker 2000: Asian Longhorn Beetles, Agricultural Research, June 2000, 18-21, www.ars,usda.gov
+
+P. Bilski, P. Bobiński, A. Krajewski, P. Witomski, Detection of woodworms’ larvae based on the acoustic signal analysis and the artificial intelligence algorithm. Archives of Acoustics 42(1) (2017),  61-70.
+
+M. Brandstetter, S. Hubner, Bioakustik zum Aufspüren von holzbrütenden Schadinsekten (Bioacoustics for Detection of Wood-boring Insects), (2015), https://www.researchgate.net/publication/278622530_Bioacoustic_a_method_to_detect_woodboring_insects.
+
+J.G.M. Creemers, Use of Acoustic Emission (AE) to Detect Activity of Common European Dry-Woodboring Insects: Practical Considerations Non-Destructive Testing in Civil Engineering (NDT-CE) September, Berlin, Germany, 2015, 15 – 17.
+
+H.I. Dunegan, Detection of Movement of Termites in Wood by Acoustic Emission Techniques, 2005, www.patentstrom.us
+
+P. Esser, P. Vanstaalduinen , A. Tas, The Woodcare project: Development of detection methods for Death watch beetle: larvae and fungal decay, in: prepared for the 30th Annual Meeting, Rosenheim, Germany. O6-11 June, (1999)
+
+J. Dominik J, Observations on the declining reproduction base of the house longhorn beetle (Hylotrupes bajulus L.) (Cerambycidae, Col.) as a pest of wooden buildings in the north-eastern region Łódzkie Province, Sylwan, 5 (2005) 62 – 64.
+
+Y. Fujii, Y. Yanase, T. Yoshimura, Y. Imamura, S. Okumura, M. Kozaki, Detection of Acoustic Emission (AE) Generated by Termite Attack in Wooden House, 30th Annual Meeting Rosenheim, Germany, 6 – 11 June, 1999.
+
+
+G. Kerner, H. Thiele, W. Unger, Gesicherte und zerstörungsfreie Ortung der Larven holzzestörender Insekten im Holz, Holztechnologie 21 (1980), 131 – 137.
+
+A. Krajewski, Die Erschätzung des Vorkommens der Holzinsekten in Polen, Acta Scansenologica 7 (1995) 138 – 154.
+
+A. Krajewski, P. Bilski, P. Witomski, P. Bobiński, Assesment of the Ability for Early Detection of Newly Hatched Larvae of Hylotrupes bajulus L. Using the Acoustic Emission Method in Scots Pine Wood. Bioresources 19(2) (2024), 2092-2105. DOI:10.15376/biores.19.2. 2092-2105.
+A. Krajewski, P. Bilski, P. Witomski, P. Bobiński, J. Guz, The progress in the research of AE detection method of old house borer larvae (Hylotrupes bajulus L.) in wooden structures. Construction & Building Materials, 256 (2020), 119387, journal homepage: www.elsevier.com/locate/conbuildmat
+
+A. Krajewski, S. Jakieła, P. Witomski, Detection of old house borer larvae in wooden structures by acoustic emission method – Influence of larval size and sensor location, Bioresources 17(2), (2022),.3435-3444. DOI:10.15376/biores.17.2.3435-3444.
+
+A. Krajewski, P. Witomski, P. Bobiński, A. Wójcik, M. Nowakowska, An attempt to detect fully-grown house longhorn beetle larvae in coniferous wood based on electroacoustic signals, Drewno. Prace naukowe. Doniesienia. Komunikaty 55 (108) (2012), 5 – 15.
+
+R.I. Lemaster, F.C. Beall, V.R. Lewis, Detection of termites with Acoustic Emision, Forest Product Journal, 47 (2) (1997) 75 – 79.  
+
+ R. W. Mankin, H. Y. Al-Ayedh, Y. Aldryhim, B. Rohde, Acoustic Detection of Rhynchophorus ferrugineus (Coleoptera: Dryophthoridae) and Oryctes elegans (Coleoptera: Scarabaeidae) in Phoenix dactylifera (Arecales: Arecacae) Trees and Offshoots in Saudi Arabian Orchards, Journal of Economic Entomology 109(2) (2016), 622–628 DOI: 10.1093/jee/tov398 
+R.W. Mankin, W.L. Osbrink, F.M. Oi, J.B. Anderson, Acoustic detection of termite infestations in urban trees, Journal of Economic Entomology, 95 (5) (2002) 981 – 988.
+
+R.W. Mankin, A. Moore, Acoustic detection of Oryctes rhinoceros (Coleoptera: Scarabaeidae: Dynastinae) and Nasutitermes luzonicus (Isoptera: Termitidae) in palm trees in urban Guam. Journal of Economic Entomology, 103 (2010) 1135-1143.
+
+R.W. Mankin, D. Shuman, J.A. Coffelt, Noise shielding of acoustic devices for insect detection. Journal of Economic Entomology, 89 (1996) 1301-1308.
+
+R. Maruthadurai, T. Veerakumar, Channabasava Veershetty, A.N. Sathis Chakaravarthi, Acoustic detection of stem and root borer Neoplocaederus ferrugineus (Coleoptera: Cerambycidae) in cashew, Journal of Asia-Pacific Entomology, 2022, № 3, p. 101968, https://doi.org/10.1016/j.aspen.2022.101968 
+J. Nocero, Listenup for termites, February,  pp. 28-29, 2003, www.PestControlMag.com
+
+M. Nowakowska, A. Krajewski , P. Witomski, P. Bobiński, Thermic limitation of AE detection method of old house borer larvae (Hylotrupes bajulus L.) in wooden structures, Construction & Building Materials, 136 (2017), 446 – 449, jo u r n a l h o m e p a g e : www.elsevier.com/locate/conbuildmat    
+
+M. Pallaske, Messung und Auswertung der Aktivität von Larven des Hausbockkäfers Hylotrupes bajulus (L.) in Holz und in einer Diät mit Hilfsmitteln moderner Elektrik. Material und Organismen 21(1) (1986) 63–79.
+B. Plinke, Akustische Erkennung von Insektenbefall in Fachwerk, Holz als Roh- und Wetrkstoff  49 (10) (1991), 404.
+
+J. Schofield, Real-time Acoustic Identification of Invasive Wood-boring Beetles, Submitted for the degree of Doctor of Philosophy University of York Department of Electronics, July 2011,  175 pp.
+H. Wichmand , Wie lange dauert ein Hausbockbefall?, Anzeiger für Schädlingskunde15(2) (1941), 21 – 24.
+
+
+
+Afiliacje
+Adam Krajewski, Warsaw University of Life Sciences – SGGW, Poland e-mail: adam_krajewski@sggw.edu.pl
+Piotr Bilski, Warsaw University of Technology, Poland, e-mail: pbilski@ire.pw.edu.pl
+Piotr Bobiński, Warsaw University of Technology, Poland e-mail: pbobinski@ire.pw.edu.pl
+Piotr Witomski, Warsaw University of Life Sciences – SGGW, Poland, e-mail: piotr_witomski@sggw.edu.pl 

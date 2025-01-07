@@ -1,0 +1,4 @@
+3. Results  
+DESCRIPTION OF RESULTS ON BACKGROUND REMOVAL ON SMALL BLOCKS + ILLUSTRATION OF THE EFFECT – FIG. 3 AND DESCRIPTION OF RESULTS ON BACKGROUND REMOVAL FROM LARGE ELEMENTS + ILLUSTRATION OF THE EFFECT - FIG. 4.
+
+      The results of larval detectability registration using the AE method on four elements across three roof structures are presented in Table 1.
