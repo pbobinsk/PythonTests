@@ -58,7 +58,7 @@ if __name__ == "__main__":
     logger.info('Text test:')
     
     inputText = """
-Metoda Detection of Acoustic Emission (AE)  cieszy się kilku dekad zainteresowaniem przy wykrywaniu i badaniu życia owadów niszczących drewno. Od ponad czterech dekad prowadzone są badania nad wykrywaniem old house borer (Hylotrupes bajulus L.) przy u życiu Detection of Acoustic emission (AE) [Kerner i in. 1980, Pallaske 1988, Plinke 1991, Schofield 2011, Krajewski et al. 2012, Brandstetter et al. 2015, Creemers 2015,  Bilski et. al. 2017, Nowakowska et al. 2017, Krajewski et al. 2020, Krajewski et al. 2024, Krajewski et al. 2024]. Ten gatunek chrząszcza jest bardzo rozprzestrzeniony na świecie [Becker 1949, Becker 1949,  Becker 1970] a w Europie środkowej i północnej powoduje największe zagrożenie dla drewnianych konstrukcji budowlanych [Wichmand 1941, Becker 1949, Becker 1949, Krajewski 1995], pomimo obserwowanego zmniejszania liczby budynków opanowanych w niektórych regionach Europy w ostatnim czasie [Dominik 2005]. 
+Nowy postęp w wykrywaniu obecności larw Hylotrupes bajulus L. w praktycznych warunkach konstrukcji dachów metodą AE – rejestracja dwukanałowa
     """
     
     with io.open(inputFile,'r',encoding='utf8') as f:
