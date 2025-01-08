@@ -1,0 +1,4 @@
+3. Results  
+DESCRIPTION OF RESULTS ON BACKGROUND REMOVAL ON SMALL BLOCKS + ILLUSTRATION OF THE EFFECT – FIG. 3 AND DESCRIPTION OF RESULTS ON BACKGROUND REMOVAL FROM LARGE ELEMENTS + ILLUSTRATION OF THE EFFECT - FIG. 4.  
+
+The results of the detection of larvae using the AE method in four elements on three roof constructions are presented in Table 1.

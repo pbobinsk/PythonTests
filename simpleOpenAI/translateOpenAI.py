@@ -20,13 +20,15 @@ class OpenAI_Wrapper:
     def list_models(self):
         return list(map(lambda x:x.id,self.client.models.list()))
 
-    def translationTest(self,prompt=""):    
+    
+    def translationTest(self,model,prompt=""):    
         completion = self.client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=model,
             messages=[
-                {"role": "system", "content": "Jesteś tłumaczem tekstu referatu naukowego. " +
-                 "Przetłumacz fragment referatu naukowego z polskiego na angielski. " +
-                 "Nie tłumacz angielskich i łacińskich słów, ani odnośników do literatury (w nawiasach kwadratowych.)"},
+                {"role": "system", "content": "Jesteś tłumaczem tekstu technicznego referatu naukowego. " +
+                 "Przetłumacz fragment referatu z polskiego na angielski. " +
+                 "Nie tłumacz angielskich i łacińskich słów, ani odnośników do literatury (w nawiasach kwadratowych.)" +
+                 "Używaj języka uznanego w naukowo-technicznych czasopismach"},
                 {
                     "role": "user",
                     "content": prompt
@@ -34,17 +36,22 @@ class OpenAI_Wrapper:
             ]
         )
         
-        return (completion.usage, completion.choices[0].message.content)
+        return (completion.usage, completion.choices[0].message.content, completion.choices[0].finish_reason)
 
 
 if __name__ == "__main__":
     logger.info('Test OpenAI API')
     if len(sys.argv) != 2:
-        logger.info('Use input file name as an argument')
+        logger.error('Use input file name as an argument')
         exit()
 
     if not os.path.isfile(sys.argv[1]):
-        logger.info(sys.argv[1]+' is not a file')
+        logger.error(sys.argv[1]+' is not a file')
+        exit()
+
+    model='' # gpt-4o-mini gpt-4o
+    if not model:
+        logger.error('Model is required')
         exit()
 
     inputFile = Path(sys.argv[1]).name
@@ -64,16 +71,16 @@ Nowy postęp w wykrywaniu obecności larw Hylotrupes bajulus L. w praktycznych w
     with io.open(inputFile,'r',encoding='utf8') as f:
         inputText = f.read()
 
-
-    usage, outputText = openapiWrapper.translationTest(prompt=inputText)
+    usage, outputText, finishReason = openapiWrapper.translationTest(model,prompt=inputText)
     #outputText = inputText
 
-    print(inputText)
-    print(outputText)
+    # print(inputText)
+    # print(outputText)
     print(usage.total_tokens)
+    print(finishReason)
 
 
-    with io.open('translated_'+inputFile,'w',encoding='utf8') as f:
+    with io.open('translated_'+model+'_'+inputFile,'w',encoding='utf8') as f:
         f.write(outputText)
 
     logger.info('Test OpenAI API done.')
