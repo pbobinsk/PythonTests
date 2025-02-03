@@ -1,11 +1,17 @@
 digraph {
-	WC [label="WebClient (Browser)"]
-	WS [label="WebServer (Flask App)"]
-	DB [label="Document Database" shape=cylinder]
+	{
+		rank=same
+		RPC1 [label="RPC bridge for ASR" shape=box]
+		DB [label="Document Database" shape=cylinder]
+		RPC2 [label="RPC bridge for NLP" shape=box]
+	}
 	ASR [label="ASR (Speech-to-Text)"]
 	NLP [label="NLP (Diagnosis)"]
-	RPC1 [label="RPC bridge for ASR"]
-	RPC2 [label="RPC bridge for NLP"]
+	subgraph cluster_webapp {
+		label="Web App" style=dashed
+		WC [label="WebClient (Browser)"]
+		WS [label="WebServer (Flask App)"]
+	}
 	WC -> WS [label="Interview recording"]
 	WS -> DB [label="Save recording"]
 	WS -> RPC1 [label="Transcription request" style=dashed]

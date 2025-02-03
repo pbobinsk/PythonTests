@@ -3,27 +3,28 @@ from graphviz import Digraph
 def generate_flowchart():
     dot = Digraph(format='png')
     
-    # # Nodes
-    dot.node('WC', 'WebClient (Browser)')
-    dot.node('WS', 'WebServer (Flask App)')
-    dot.node('DB', 'Document Database', shape='cylinder')
+    # Nodes
+    # dot.node('WC', 'WebClient (Browser)')
+    # dot.node('WS', 'WebServer (Flask App)')
+    # dot.node('DB', 'Document Database', shape='cylinder')
+
+    with dot.subgraph() as same_rank:
+        same_rank.attr(rank='same')
+        same_rank.node('RPC1', 'RPC bridge for ASR',shape='box')
+        same_rank.node('DB', 'Document Database', shape='cylinder')
+        same_rank.node('RPC2', 'RPC bridge for NLP',shape='box')
+
     dot.node('ASR', 'ASR (Speech-to-Text)')
     dot.node('NLP', 'NLP (Diagnosis)')
-    dot.node('RPC1', 'RPC bridge for ASR')
-    dot.node('RPC2', 'RPC bridge for NLP')
+    # dot.node('RPC1', 'RPC bridge for ASR',shape='box')
+    # dot.node('RPC2', 'RPC bridge for NLP',shape='box')
     
-    # # Edges
-    # dot.edge('WC', 'WS', 'Nagrywanie rozmowy')
-    # dot.edge('WS', 'DB', 'Zapis nagrania')
-    # dot.edge('WS', 'RPC1', 'Żądanie transkrypcji')
-    # dot.edge('RPC1', 'ASR', 'Przetwarzanie mowy')
-    # dot.edge('ASR', 'DB', 'Zapis transkryptu')
-    # dot.edge('WS', 'RPC2', 'Żądanie analizy NLP')
-    # dot.edge('RPC2', 'NLP', 'Generowanie diagnozy')
-    # dot.edge('NLP', 'WS', 'Przekazanie wyników')
-    # dot.edge('WS', 'WC', 'Prezentacja wyników lekarzowi')
 
-    
+    with dot.subgraph(name='cluster_webapp') as cluster:
+        cluster.attr(label="Web App", style="dashed")
+        cluster.node('WC', 'WebClient (Browser)')
+        cluster.node('WS', 'WebServer (Flask App)')
+
     # Edges
     dot.edge('WC', 'WS', 'Interview recording')
     dot.edge('WS', 'DB', 'Save recording')
