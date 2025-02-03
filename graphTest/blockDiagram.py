@@ -1,12 +1,13 @@
 from graphviz import Digraph
 
-def generate_flowchart():
+def generate_flowchart_full():
     dot = Digraph(format='png')
     
     # Nodes
-    # dot.node('WC', 'WebClient (Browser)')
-    # dot.node('WS', 'WebServer (Flask App)')
-    # dot.node('DB', 'Document Database', shape='cylinder')
+    with dot.subgraph(name='cluster_webapp') as cluster:
+        cluster.attr(label="Web App", style="dashed")
+        cluster.node('WC', 'WebClient (Browser)')
+        cluster.node('WS', 'WebServer (Flask App)')
 
     with dot.subgraph() as same_rank:
         same_rank.attr(rank='same')
@@ -16,14 +17,6 @@ def generate_flowchart():
 
     dot.node('ASR', 'ASR (Speech-to-Text)')
     dot.node('NLP', 'NLP (Diagnosis)')
-    # dot.node('RPC1', 'RPC bridge for ASR',shape='box')
-    # dot.node('RPC2', 'RPC bridge for NLP',shape='box')
-    
-
-    with dot.subgraph(name='cluster_webapp') as cluster:
-        cluster.attr(label="Web App", style="dashed")
-        cluster.node('WC', 'WebClient (Browser)')
-        cluster.node('WS', 'WebServer (Flask App)')
 
     # Edges
     dot.edge('WC', 'WS', 'Interview recording')
@@ -42,6 +35,37 @@ def generate_flowchart():
     dot.edge('WS', 'WC', 'Diagnosis presentation')
     
     return dot
+
+def generate_flowchart():
+    dot = Digraph(format='png')
+    
+    # Nodes
+    with dot.subgraph(name='cluster_webapp') as cluster:
+        cluster.attr(label="Web App", style="dashed")
+        cluster.node('WC', 'WebClient (Browser)')
+        cluster.node('WS', 'WebServer (Flask App)')
+
+    with dot.subgraph() as same_rank:
+        same_rank.attr(rank='same')
+        same_rank.node('ASR', 'ASR (Speech-to-Text)',shape='box')
+        same_rank.node('DB', 'Document Database', shape='cylinder')
+        same_rank.node('NLP', 'NLP (Diagnosis)',shape='box')
+
+    # Edges
+    dot.edge('WC', 'WS', 'Interview')
+    dot.edge('WC', 'WS', 'Interview',style='invis')
+    dot.edge('WS', 'DB', 'Recording')
+    dot.edge('WS', 'ASR', 'Transcription',style='dashed')
+    dot.edge('ASR', 'DB', 'Recording',dir='both')
+    dot.edge('ASR', 'DB', 'Transcription')
+    dot.edge('WS', 'NLP', 'Diagnosis',dir='both')
+    dot.edge('DB', 'NLP', 'Transcription',style='invis')
+    dot.edge('NLP', 'DB', 'Transcription',dir='both')
+    dot.edge('WS', 'WC', 'Diagnosis')
+    
+    return dot
+
+
 
 # Generowanie schematu
 flowchart = generate_flowchart()
