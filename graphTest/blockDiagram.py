@@ -72,4 +72,7 @@ flowchart = generate_flowchart()
 flowchart.render('system_diagnosis_flowchart', format='png', cleanup=False)
 flowchart.render('system_diagnosis_flowchart', format='svg', cleanup=False)
 
+flowchart = generate_flowchart_full()
+flowchart.render('system_diagnosis_flowchart_full', format='png', cleanup=False)
+flowchart.render('system_diagnosis_flowchart_full', format='svg', cleanup=False)
 
