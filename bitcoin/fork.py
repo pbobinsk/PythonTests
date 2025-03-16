@@ -70,25 +70,53 @@ else:
 
 print("\n❌ Krótszy łańcuch zostaje odrzucony, transakcje mogą trafić do kolejnych bloków!")
 
+# import networkx as nx
+# import matplotlib.pyplot as plt
+
+# def visualize_blockchain(blockchain):
+#     G = nx.DiGraph()  # Tworzymy graf skierowany
+
+#     # Dodajemy węzły i krawędzie
+#     for block_hash, block in blockchain.items():
+#         G.add_node(block_hash[:6])  # Skracamy hash dla lepszej widoczności
+#         if block["previous"]:
+#             G.add_edge(block["previous"][:6], block_hash[:6])  # Połączenie z poprzednim blokiem
+
+#     # Rysowanie grafu
+#     plt.figure(figsize=(8, 5))
+#     pos = nx.spring_layout(G, seed=42)  # Automatyczne rozmieszczenie węzłów
+#     nx.draw(G, pos, with_labels=True, node_color="lightblue", edge_color="gray", node_size=2000, font_size=10, font_weight="bold")
+    
+#     plt.title("Wizualizacja Blockchaina")
+#     plt.show()
+
+# # 🔹 Wywołanie funkcji z przykładowymi danymi
+# visualize_blockchain(blockchain)
+
+import matplotlib
+matplotlib.use("Agg")  # Używa backendu bez GUI (bez Tcl/Tk)
+
 import networkx as nx
 import matplotlib.pyplot as plt
 
 def visualize_blockchain(blockchain):
-    G = nx.DiGraph()  # Tworzymy graf skierowany
+    G = nx.DiGraph()  # Graf skierowany
 
     # Dodajemy węzły i krawędzie
     for block_hash, block in blockchain.items():
-        G.add_node(block_hash[:6])  # Skracamy hash dla lepszej widoczności
+        G.add_node(block_hash[:6])  # Skrócony hash dla czytelności
         if block["previous"]:
-            G.add_edge(block["previous"][:6], block_hash[:6])  # Połączenie z poprzednim blokiem
+            G.add_edge(block["previous"][:6], block_hash[:6])  # Połączenie do poprzedniego bloku
 
-    # Rysowanie grafu
+    # Rysowanie grafu BEZ użycia Tkinter
     plt.figure(figsize=(8, 5))
-    pos = nx.spring_layout(G, seed=42)  # Automatyczne rozmieszczenie węzłów
+    pos = nx.spring_layout(G, seed=42)  # Rozkład węzłów
     nx.draw(G, pos, with_labels=True, node_color="lightblue", edge_color="gray", node_size=2000, font_size=10, font_weight="bold")
-    
-    plt.title("Wizualizacja Blockchaina")
-    plt.show()
 
-# 🔹 Wywołanie funkcji z przykładowymi danymi
+    # Zamiast plt.show(), zapisujemy do pliku
+    plt.savefig("blockchain_graph.png")  # Możesz użyć PNG, SVG, PDF itd.
+    print("✅ Wygenerowano graf blockchaina jako blockchain_graph.png")
+
+
+# 🔹 Generujemy wizualizację
 visualize_blockchain(blockchain)
