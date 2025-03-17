@@ -120,3 +120,20 @@ def visualize_blockchain(blockchain):
 
 # 🔹 Generujemy wizualizację
 visualize_blockchain(blockchain)
+
+from collections import defaultdict
+
+def print_blockchain_tree(blockchain):
+    tree = defaultdict(list)
+    for block_hash, block in blockchain.items():
+        tree[block["previous"]].append(block_hash)
+
+    def print_branch(block, prefix=""):
+        print(f"{prefix}└── {block}")
+        for child in tree.get(block, []):
+            print_branch(child, prefix + "    ")
+
+    print_branch(None)  # Start od Genesis Block
+
+
+print_blockchain_tree(blockchain)
