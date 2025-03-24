@@ -1,0 +1,47 @@
+import block
+import ecc
+import helper
+import network
+import script
+import tx
+---
+example1
+---
+exercise1:helper:HelperTest:test_merkle_parent
+---
+example2
+---
+exercise2:helper:HelperTest:test_merkle_parent_level
+---
+example3
+---
+exercise3:helper:HelperTest:test_merkle_root
+---
+example4
+---
+exercise4:block:BlockTest:test_validate_merkle_root
+---
+example5
+---
+exercise5:
+import math
+
+total = 27
+# Użyj math.ceil(math.log (total, 2)) do obliczenia maksymalnej głębokości
+# Utwórz tablicę tablic na drzewo
+# Przejdź w pętli wszystkie możliwe głębokości
+    # Określ, ile elementów jest na tej głębokości
+    # Użyj math.ceil(total / 2**(maksymalna głębokość - aktualna głębokość))
+    # Utwórz pustą tablicę dla tego poziomu
+    # Dołącz poziom do drzewa
+# Wydrukuj drzewo
+---
+example6
+---
+example7
+---
+example8
+---
+exercise6:merkleblock:MerkleBlockTest:test_parse
+---
+exercise7:merkleblock:MerkleBlockTest:test_is_valid

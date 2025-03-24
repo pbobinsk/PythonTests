@@ -1,0 +1,133 @@
+import bloomfilter
+import block
+import ecc
+import helper
+import merkleblock
+import network
+import script
+import tx
+---
+example1
+---
+example2
+---
+exercise1:
+from helper import hash160
+
+bit_field_size = 10
+bit_field = [0] * bit_field_size
+items = (b'hello world', b'goodbye')
+# wykonaj w pętli dla każdego elementu,
+    # oblicz hash160 elementu,
+    # zinterpretuj skrót, jako liczbę całkowitą big endian i podziel modulo przez nią bit_field_size,
+    # ustaw ten bit w polu bit_field,
+# wydrukuj bit_field
+---
+example3
+---
+example4
+---
+exercise2:
+from bloomfilter import BloomFilter, BIP37_CONSTANT
+from helper import bit_field_to_bytes, murmur3
+
+field_size = 10
+function_count = 5
+tweak = 99
+items = (b'Hello World',  b'Goodbye!')
+# oblicz rozmiar pola bitowego,
+# utwórz puste pole bitowe,
+# wykonaj w pętli dla każdego elementu,
+    # wykonaj w pętli dla wszystkich funkcji,
+        # oblicz ziarno,
+        # oblicz skrót murmur3 elementu używając ziarna,
+        # podziel modulo przez rozmiar pola bitowego,
+        # ustaw bit,
+# skonwertuj pole bitowe na bajty,
+# wydrukuj bajty szesnastkowo
+---
+exercise3:bloomfilter:BloomFilterTest:test_add
+---
+exercise4:bloomfilter:BloomFilterTest:test_filterload
+---
+exercise5:network:GetDataMessageTest:test_serialize
+---
+example5
+---
+exercise6:
+import time
+
+from block import Block
+from bloomfilter import BloomFilter
+from ecc import PrivateKey
+from helper import hash256, little_endian_to_int, encode_varint, read_varint, decode_base58, SIGHASH_ALL
+from merkleblock import MerkleBlock
+from network import (
+    GetDataMessage,
+    GetHeadersMessage,
+    HeadersMessage,
+    NetworkEnvelope,
+    SimpleNode,
+    TX_DATA_TYPE,
+    FILTERED_BLOCK_DATA_TYPE,
+)
+from script import p2pkh_script, Script
+from tx import Tx, TxIn, TxOut
+
+last_block_hex = ''  # FILL THIS IN
+
+secret = little_endian_to_int(hash256(b''))  # FILL THIS IN
+private_key = PrivateKey(secret=secret)
+addr = private_key.point.address(testnet=True)
+h160 = decode_base58(addr)
+
+target_address = 'mwJn1YPMq7y5F8J3LkC5Hxg9PHyZ5K4cFv'
+target_h160 = decode_base58(target_address)
+target_script = p2pkh_script(target_h160)
+fee = 5000  # opłata w satoshi
+
+
+# połącz się z testnet.programmingbitcoin.com w trybie testnetu
+# Utwórz filtr Blooma o rozmiarze 30, z 5 funkcjami. Dodaj tweak.
+# dodaj h160 do filtra Blooma
+# zakończ uzgadnianie
+# załaduj filtr Blooma za pomocą komunikatu filterload
+
+# ustaw blok startowy na last_block otrzymaną powyżej
+# wyślij komunikat getheaders z blokiem początkowym
+
+# zaczekaj na komunikat headers
+# zapisz ostatni blok, jako None
+# zainicjalizuj GetDataMessage
+# przejdź pętlą przez bloki w nagłówkach
+    # sprawdź czy dowód pracy w bloku jest prawidłowy
+    # sprawdź czy prev_block tego bloku jest ostatnim blokiem
+    # dodaj nowy element do komunikatu getdata
+    # powinno być FILTERED_BLOCK_DATA_TYPE i skrót bloku
+    # ustaw ostatni blok na bieżący skrót
+# wyślij komunikat getdata
+
+# zainicjuj prev_tx i prev_index na None
+# wykonuj w pętli gdy prev_tx ma wartość None
+    # czekaj na komunikat merkleblock lub tx
+    # jeśli mamy komunikat merkleblock
+        # sprawdź, czy MerkleBlock jest poprawny
+    # w przeciwnym wypadku mamy komunikat tx
+        # ustaw wartość True dla testnet tx
+        # wykonaj w pętli dla wszystkich wyjść tx
+            # jeśli wyjście ma ten sam adres, co nasz adres, wyjście zostało znalezione
+                # znaleźliśmy nasze utxo, przypisz wartości do prev_tx, prev_index i tx
+# utwórz TxIn
+# oblicz kwotę wyjścia (poprzednia kwota minus opłata)
+# utwórz nowe wyjście TxOut dla skryptu docelowego z kwotą wyjścia
+# utwórz nową transakcję z jednym wejściem i z jednym wyjściem
+# podpisz jedyne wejście transakcji
+# serializuj i zamień na hex, aby zobaczyć, jak to wygląda
+# wyślij tę podpisaną transakcję do sieci
+# poczekaj sekundę, aż transakcja dotrze, używając time.sleep(1)
+# potem zapytaj drugi węzeł o tę transakcję
+# utwórz GetDataMessage
+# zapytaj o naszą transakcję, dodając ją do komunikatu
+# wyślij komunikat
+# teraz poczekaj na odpowiedź Tx
+# jeśli otrzymana tx ma ten sam identyfikator, co nasza tx, skończyliśmy!
