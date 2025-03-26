@@ -59,7 +59,7 @@ class FieldElement:
         num = pow(self.num, n, self.prime)
         return self.__class__(num, self.prime)
 
-   def __truediv__(self, other):
+    def __truediv__(self, other):
         if self.prime != other.prime:
             raise TypeError('Nie można dzielić dwóch liczb z różnych ciał')
         # self.num i other.num to wartość
