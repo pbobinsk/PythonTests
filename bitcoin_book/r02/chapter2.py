@@ -2,7 +2,7 @@ import os, sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from bitcoin_module.helper import run, run_all
-import bitcoin_module.ecc as ecc
+import bitcoin_module.ecc_tests as ecc
 from bitcoin_module.ecc import Point
 
 if __name__ == "__main__":

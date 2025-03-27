@@ -2,18 +2,18 @@ import os, sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from bitcoin_module.helper import run, run_all
-import bitcoin_module.ecc as ecc
+import bitcoin_module.ecc_tests as ecc_tests
 from bitcoin_module.ecc import PrivateKey, PublicKey
 import hashlib
 
 if __name__ == "__main__":
     
 
-    run_all(ecc.ECCTest)
+    run_all(ecc_tests.ECCTest)
 
-    run_all(ecc.S256Test)
+    run_all(ecc_tests.S256Test)
 
-    run_all(ecc.PrivateKeyTest)
+    run_all(ecc_tests.PrivateKeyTest)
 
 
 # Przykładowa wiadomość
