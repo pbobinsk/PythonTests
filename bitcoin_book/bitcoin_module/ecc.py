@@ -288,12 +288,19 @@ class ECCTest(TestCase):
             (47, 71, 117, 141, 60, 139),
             (143, 98, 76, 66, 47, 71),
         )
-
-        # wykonaj dodawania w pętli
-        # zainicjuj x i y jako FieldElement
-        # utwórz p1, p2 i p3 jako Point
-        # sprawdź, czy p1+p2==p3
-        raise NotImplementedError
+        # iteruj po dodawaniach
+        for x1_raw, y1_raw, x2_raw, y2_raw, x3_raw, y3_raw in additions:
+            x1 = FieldElement(x1_raw, prime)
+            y1 = FieldElement(y1_raw, prime)
+            p1 = Point(x1, y1, a, b)
+            x2 = FieldElement(x2_raw, prime)
+            y2 = FieldElement(y2_raw, prime)
+            p2 = Point(x2, y2, a, b)
+            x3 = FieldElement(x3_raw, prime)
+            y3 = FieldElement(y3_raw, prime)
+            p3 = Point(x3, y3, a, b)
+            # sprawdź, czy p1 + p2 == p3
+            self.assertEqual(p1 + p2, p3)
 
     def test_rmul(self):
         # sprawdź następujące mnożenia skalarne
@@ -488,6 +495,23 @@ class PrivateKey:
             v = hmac.new(k, v, s256).digest()
     # end::source14[]
 
+class PublicKey:
+    def __init__(self, point):
+        self.point = point  # Klucz publiczny jako punkt na krzywej
+
+    def verify(self, z, signature):
+        r, s = signature.r, signature.s
+        if not (1 <= r < N and 1 <= s < N):
+            return False  # Niepoprawny zakres
+
+        s_inv = pow(s, N - 2, N)  # Odwrotność s modulo N
+        u1 = z * s_inv % N
+        u2 = r * s_inv % N
+        point = u1 * G + u2 * self.point  # Weryfikacja ECDSA
+        return point.x.num == r  # Sprawdzenie wartości r
+    
+    def __repr__(self):
+        return f"PublicKey(x={hex(self.point.x.num)}, y={hex(self.point.y.num)})"
 
 class PrivateKeyTest(TestCase):
 
