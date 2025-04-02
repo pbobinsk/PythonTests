@@ -60,11 +60,11 @@ def little_endian_to_int(b):
     '''sekwencja bajtowa dla little_endian_to_int powinna być liczbą little endian.
     Zwraca liczbę całkowitą'''
     # wykorzystaj int.from_bytes()
-    raise NotImplementedError
+    return int.from_bytes(b, 'little')
 
 
 def int_to_little_endian(n, length):
     '''int_to_little_endian dla liczby całkowitej zwraca sekwencję bajtową
     w porządku little endian o długości'''
     # wykorzystaj n.to_bytes()
-    raise NotImplementedError
+    return n.to_bytes(length, 'little')

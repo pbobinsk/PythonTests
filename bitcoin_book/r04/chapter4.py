@@ -1,7 +1,7 @@
 import os, sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from bitcoin_module.helper import run, run_all
+from bitcoin_module.helper import run, run_all, hash256, little_endian_to_int
 import bitcoin_module.ecc_tests as ecc_tests
 from bitcoin_module.ecc import PrivateKey, PublicKey
 import hashlib
@@ -19,7 +19,6 @@ if __name__ == "__main__":
 
     run_all(ecc_tests.HelperTest)
 
-    exit()
 
 # Przykładowa wiadomość
 message = "Hello, Bitcoin!"
@@ -42,3 +41,31 @@ print(f"Klucz publiczny: ={pub}")
 # Sprawdzamy podpis
 is_valid = pub.verify(z, signature)
 print("Czy podpis jest poprawny?", is_valid)
+
+
+print("PrivateKey")
+print(priv)
+print(priv.hex())
+print(priv.wif())
+print(priv.wif(testnet=True))
+print(priv.wif(compressed=False))
+print(priv.wif(compressed=False,testnet=True))
+
+
+print("PublicKey")
+print(pub)
+print(pub.point.sec())
+print(pub.point.sec(compressed=False))
+print(pub.point.address())
+print(pub.point.address(compressed=False))
+print(pub.point.address(testnet=True))
+print(pub.point.address(compressed=False,testnet=True))
+
+print("Signature")
+print(signature.der())
+
+passphrase = b'pbobinsk@gmail.com my super secret pbo'
+secret = little_endian_to_int(hash256(passphrase))
+priv = PrivateKey(secret)
+print("Address Testnet")
+print(priv.point.address(testnet=True))
