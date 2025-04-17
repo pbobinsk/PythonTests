@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package data;
+
+option java_package = "org.example.protobuf";
+option java_outer_classname = "MyDataProto";
+
+
+message MyData {
+  int32 id = 1;
+  string name = 2;
+  repeated string items = 3;
+  map<string, int32> values = 4;
+}
