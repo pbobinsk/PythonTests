@@ -59,6 +59,9 @@ def index():
             <div class="node-message">
                 <strong>{{ wiadomosc }}</strong>
             </div>
+            <div class="node-message">
+                <strong>To jest nowa wersja{{ wiadomosc }}</strong>
+            </div>
         </div>
     </body>
     </html>
@@ -68,4 +71,8 @@ def index():
 if __name__ == '__main__':
     # Uruchom aplikację Flask, nasłuchując na wszystkich interfejsach ('0.0.0.0')
     # na porcie 5000, aby była dostępna z zewnątrz kontenera.
+    # testy CRASH w Swarm !!!
+    # raise Exception("Błąd krytyczny!")
+    # !!!
+
     app.run(host='0.0.0.0', port=5000, debug=True) # debug=True dla łatwiejszego rozwoju
