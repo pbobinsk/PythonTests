@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  web:
+    image: user-management:latest
+    ports:
+      - "5000:5000"
+    environment:
+      FLASK_APP: app.py  # Zmień na nazwę Twojego głównego pliku aplikacji
+      FLASK_ENV: production         # Zazwyczaj ustawia się na 'production' w Swarm
+      FLASK_DEBUG: 1
+    deploy:
+      replicas: 3                     # Uruchom trzy repliki Twojej aplikacji
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure

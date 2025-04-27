@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User List</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Users</h1>
+        <a class="button" href="/">Back to Home</a>
+        <a class="button" href="/users/new">Add New User</a>
+        <table>
+            <thead>
+                <tr><th>ID</th><th>Name</th><th>Email</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        <a class="button small" href="/users/edit/{{ user.id }}">Edit</a>
+                        <a class="button small danger" href="/users/delete/{{ user.id }}">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

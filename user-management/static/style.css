@@ -1,0 +1,48 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+    padding: 20px;
+}
+.container {
+    max-width: 600px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+h1 {
+    text-align: center;
+}
+form input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+}
+button, .button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 5px 0;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    text-align: center;
+}
+.button.small {
+    padding: 5px 10px;
+    font-size: 0.9em;
+}
+.button.danger {
+    background: #e74c3c;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+table th, table td {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}

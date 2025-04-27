@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ 'Edit' if user else 'Add' }} User</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>{{ 'Edit' if user else 'Add' }} User</h1>
+        <a class="button" href="/">Back to Home</a>
+        <form method="post">
+            <input type="text" name="name" placeholder="Name" value="{{ user.name if user else '' }}" required><br>
+            <input type="email" name="email" placeholder="Email" value="{{ user.email if user else '' }}" required><br>
+            <button class="button" type="submit">Save</button>
+        </form>
+    </div>
+</body>
+</html>
