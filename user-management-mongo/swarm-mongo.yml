@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  flask_app:
+    image: user-management-mongo:latest
+    environment:
+      # --- KLUCZOWA ZMIANA ---
+      # Użyj host.docker.internal do połączenia z MongoDB na hoście
+      FLASK_ENV: development
+      FLASK_APP: app.py # Zmień na nazwę pliku startowego
+      SECRET_KEY: 'sekretny-klucz-tylko-dla-lokalnego-developmentu-zmien-mnie!'
+      # MONGODB_URI: 'mongodb+srv://pbouser:1q2w3e4r@pbocluster0.ukvof.mongodb.net/userdb?retryWrites=true&w=majority'
+      MONGODB_URI: 'mongodb://mongo:27017/usersdb'
+    networks:
+      - app-network # Używamy sieci overlay
+    deploy:
+      # --- Konfiguracja wdrożenia w Swarm ---
+      mode: replicated
+      replicas: 3 # Uruchom 3 instancje (kontenery) tej usługi
+      update_config:
+        parallelism: 1 # Aktualizuj po jednej replice na raz
+        delay: 10s # Odczekaj 10 sekund między aktualizacjami replik
+        order: stop-first # Zatrzymaj starą replikę przed uruchomieniem nowej
+      restart_policy:
+        condition: on-failure # Restartuj tylko w razie błędu
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      # Opcjonalnie: Limity zasobów (dostosuj do potrzeb)
+      # resources:
+      #   limits:
+      #     cpus: '0.50' # Limit do 50% jednego rdzenia CPU
+      #     memory: 256M # Limit do 256MB RAM
+      #   reservations:
+      #     cpus: '0.25' # Zarezerwuj 25% rdzenia
+      #     memory: 128M # Zarezerwuj 128MB RAM
+    # Usunięto 'ports' - dostęp będzie przez Ingress Swarm lub Load Balancer
+    # Jeśli chcesz bezpośredniego dostępu do *każdej* repliki,
+    # możesz użyć mode: host, ale zazwyczaj wystarcza routing mesh Swarm.
+    # Dostęp do aplikacji będzie przez port 5000 na *każdym* węźle Swarm.
+    # Docker Swarm automatycznie rozdzieli ruch.
+    ports:
+      - target: 5000 # Port wewnątrz kontenera
+        published: 5000 # Port publicznie dostępny na węzłach Swarm
+        protocol: tcp
+        mode: ingress # Użyj wbudowanego load balancera Swarm (routing mesh)
+
+  # Serwis MongoDB
+  mongo:
+    image: mongo:latest
+    networks:
+      - app-network
+    volumes:
+      # Użyj nazwanego wolumenu dla danych MongoDB.
+      # WAŻNE: W Swarm zarządzanie stanem (jak baza danych) jest złożone.
+      # Poniższa konfiguracja z 1 repliką i wolumenem 'local'
+      # oznacza, że dane będą przechowywane tylko na tym węźle, gdzie
+      # aktualnie działa kontener mongo. Jeśli węzeł padnie lub kontener
+      # zostanie przeniesiony, dane mogą zostać utracone lub niedostępne.
+      # Dla produkcji wymagana jest konfiguracja MongoDB Replica Set
+      # i/lub użycie sterowników wolumenów obsługujących współdzielony storage (NFS, GlusterFS, Ceph itp.).
+      - mongo-data:/data/db
+    deploy:
+      # --- Konfiguracja wdrożenia MongoDB ---
+      mode: replicated
+      replicas: 1 # !!! TYLKO 1 REPLIKA DLA PROSTEGO STANU !!!
+                  # Zwiększenie replik bez konfiguracji Replica Set w Mongo
+                  # i odpowiednich wolumenów doprowadzi do niespójności danych.
+      placement:
+        constraints:
+          - node.role == manager # Umieść kontener bazy danych na węźle manager
+                                 # (zmniejsza ryzyko utraty danych przy awarii workera,
+                                 # ale nadal nie zapewnia wysokiej dostępności)
+      restart_policy:
+        condition: on-failure
+    # Opcjonalnie: mapuj port 27017 na hosta TYLKO jeśli potrzebujesz
+    # bezpośredniego dostępu do bazy z zewnątrz klastra Swarm dla celów debugowania.
+    # W środowisku produkcyjnym zazwyczaj się tego nie robi.
+    # ports:
+    #   - target: 27017
+    #     published: 27017
+    #     protocol: tcp
+    #     mode: host # Użyj trybu host, aby port był dostępny tylko na tym węźle, gdzie działa kontener mongo
+
+# Definicja sieci overlay dla komunikacji między serwisami w klastrze
+networks:
+  app-network:
+    driver: overlay # Sieć warstwy nakładkowej, działa w całym Swarm
+    attachable: true # Opcjonalnie: pozwala na podłączanie kontenerów spoza stacka
+
+# Definicja wolumenu nazwanego dla danych MongoDB
+volumes:
+  mongo-data:
+    driver: local # Domyślny sterownik, dane przechowywane lokalnie na węźle

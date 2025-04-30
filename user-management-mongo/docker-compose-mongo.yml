@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # Serwis aplikacji Flask
+  flask_app:
+    build: .
+    container_name: my_flask_app_compose # Można zmienić nazwę kontenera
+    ports:
+      - "5000:5000" # Mapuje port 5000 hosta na port 5000 kontenera Flask
+    environment:
+      FLASK_ENV: development
+      FLASK_APP: app.py # Upewnij się, że to poprawna nazwa pliku startowego
+      SECRET_KEY: 'sekretny-klucz-tylko-dla-lokalnego-developmentu-zmien-mnie!' # Warto ustawić przez zmienną środowiskową hosta
+      # --- KLUCZOWA ZMIANA: Użyj nazwy serwisu 'mongo' jako hosta ---
+      # Docker Compose zapewni rozpoznawanie nazw między kontenerami w tej samej sieci.
+      MONGODB_URI: 'mongodb://mongo:27017/usersdb'
+    volumes:
+      # Mapuj kod źródłowy dla łatwego developmentu (zmiany widoczne bez przebudowy obrazu)
+      - ./:/app
+    networks:
+      # Połącz z zdefiniowaną poniżej siecią
+      - app-network
+    depends_on:
+      # Poczekaj na uruchomienie kontenera 'mongo' przed startem 'flask_app'
+      # WAŻNE: To gwarantuje tylko start kontenera, nie gotowość usługi MongoDB wewnątrz.
+      # Aplikacja Flask powinna nadal być odporna na błędy połączenia przy starcie.
+      - mongo
+    # Usunięto 'extra_hosts', ponieważ nie łączymy się już z hostem dla bazy danych
+
+  # --- NOWY SERWIS: MongoDB ---
+  mongo:
+    image: mongo:latest # Użyj oficjalnego obrazu MongoDB (można przypiąć wersję, np. mongo:5.0)
+    container_name: my_mongo_db_compose # Można zmienić nazwę kontenera
+    ports:
+      # Opcjonalnie: mapuj port MongoDB na hosta, jeśli chcesz się łączyć
+      # z zewnątrz kontenera (np. przez MongoDB Compass z Twojej maszyny)
+      - "27017:27017"
+    volumes:
+      # Użyj wolumenu nazwanego, aby dane MongoDB przetrwały restarty/usunięcie kontenera
+      - mongo-data:/data/db
+    networks:
+      # Połącz z tą samą siecią co aplikacja Flask
+      - app-network
+    # Opcjonalnie: Możesz ustawić zmienne środowiskowe do inicjalizacji MongoDB, np.:
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: root
+    #   MONGO_INITDB_ROOT_PASSWORD: examplepass
+    #   MONGO_INITDB_DATABASE: usersdb # Ta baza zostanie utworzona, jeśli nie istnieje
+
+# --- Definicja sieci ---
+# Definiuje sieć, w której kontenery mogą się komunikować po nazwach serwisów
+networks:
+  app-network:
+    driver: bridge # Standardowa sieć mostkowa dla docker-compose
+
+# --- Definicja wolumenu ---
+# Definiuje nazwany wolumen dla trwałości danych MongoDB
+volumes:
+  mongo-data:
+    # driver: local (jest domyślny)
