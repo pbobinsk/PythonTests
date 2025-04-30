@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pl" data-theme="light"> <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Zarządzanie użytkownikami{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <style>
+        /* Style dla flash (bez zmian) */
+        .flash { padding: 1rem; margin-bottom: 1rem; border-radius: var(--border-radius); }
+        .flash.success { background-color: var(--pico-color-green-100); border: 1px solid var(--pico-color-green-400); color: var(--pico-color-green-900); }
+        .flash.error { background-color: var(--pico-color-red-100); border: 1px solid var(--pico-color-red-400); color: var(--pico-color-red-900); }
+        .flash.warning { background-color: var(--pico-color-amber-100); border: 1px solid var(--pico-color-amber-400); color: var(--pico-color-amber-900); }
+        .flash.info { background-color: var(--pico-color-blue-100); border: 1px solid var(--pico-color-blue-400); color: var(--pico-color-blue-900); }
+        /* Style dla akcji (bez zmian) */
+        td form { display: inline-block; margin-right: 0.5rem; }
+        td form:last-child { margin-right: 0; }
+        .actions button, .actions a[role=button] { margin: 0; padding: 0.3rem 0.6rem; font-size: 0.8rem; }
+        /* Dodatkowy margines dla body, aby footer nie nachodził */
+        body { padding-bottom: 5rem; }
+        footer { background: var(--pico-card-background-color); border-top: 1px solid var(--pico-card-border-color); padding: 1rem 0; text-align: center; position: fixed; bottom: 0; width: 100%; left:0; }
+    </style>
+</head>
+<body>
+    <nav class="container-fluid">
+      <ul>
+        <li><a href="{{ url_for('index') }}" class="contrast"><strong>UserApp</strong></a></li>
+      </ul>
+      <ul>
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="{{ url_for('list_users') }}">Lista użytkowników</a></li>
+        <li><a href="{{ url_for('add_user') }}" role="button">Dodaj użytkownika</a></li>
+      </ul>
+    </nav>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+      <small>Prosta aplikacja Flask + MongoDB + Docker Swarm &copy; {{ current_year }}</small>
+    </footer>
+</body>
+</html>

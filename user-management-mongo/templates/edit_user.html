@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Edytuj użytkownika{% endblock %}
+
+{% block content %}
+  <article>
+    <header><h2>Edytuj użytkownika: {{ user.name }}</h2></header>
+    <form action="{{ url_for('update_user', user_id=user._id) }}" method="post">
+      <label for="name">
+        Imię
+        <input type="text" id="name" name="name" value="{{ user.name }}" required>
+      </label>
+      <label for="email">
+        Email
+        <input type="email" id="email" name="email" value="{{ user.email }}" required>
+      </label>
+          <button type="submit">Zapisz zmiany</button>
+          <a href="{{ url_for('list_users') }}" role="button" class="secondary outline">Anuluj</a>
+    </form>
+  </article>
+{% endblock %}

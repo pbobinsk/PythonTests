@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Dodaj użytkownika{% endblock %}
+
+{% block content %}
+<article>
+  <header><h2>Dodaj nowego użytkownika</h2></header>
+  <form action="{{ url_for('add_user') }}" method="post">
+    <label for="name">
+      Imię
+      <input type="text" id="name" name="name" placeholder="Imię i nazwisko" value="{{ name or '' }}" required>
+    </label>
+    <label for="email">
+      Email
+      <input type="email" id="email" name="email" placeholder="adres@email.com" value="{{ email or '' }}" required>
+    </label>
+        <button type="submit">Dodaj użytkownika</button>
+        <a href="{{ url_for('list_users') }}" role="button" class="secondary outline">Anuluj</a>
+  </form>
+</article>
+{% endblock %}

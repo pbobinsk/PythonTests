@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  flask_app:
+    image: user-management-mongo:latest
+    ports:
+      - "5000:5000" # Mapuj port aplikacji Flask
+    environment:
+      # --- KLUCZOWA ZMIANA ---
+      # Użyj host.docker.internal do połączenia z MongoDB na hoście
+      FLASK_ENV: development
+      FLASK_APP: app.py # Zmień na nazwę pliku startowego
+      SECRET_KEY: 'sekretny-klucz-tylko-dla-lokalnego-developmentu-zmien-mnie!'
+      MONGODB_URI: 'mongodb+srv://pbouser:1q2w3e4r@pbocluster0.ukvof.mongodb.net/userdb?retryWrites=true&w=majority'
+      # MONGODB_URI: 'mongodb://host.docker.internal:27017/usersdb'
+    volumes:
+      # Opcjonalnie: mapuj kod dla łatwego developmentu
+      - ./:/app
+    # --- WAŻNE DLA LINUXA I NOWSZYCH WERSJI DOCKER ---
+    # Dodaj wpis do /etc/hosts kontenera, aby host.docker.internal działało poprawnie
+    # host-gateway to specjalna wartość wskazująca na IP hosta w sieci mostka
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    deploy:
+      replicas: 3 # Uruchom 3 repliki tej usługi
+      restart_policy:
+        condition: on-failure # Uruchom ponownie w razie awarii
+      update_config:
+        parallelism: 1 # Aktualizuj po jednej replice na raz
+        delay: 10s # Odczekaj 10s między aktualizacjami replik
+    networks:
+      - webnet # Użyj zdefiniowanej sieci overlay
+
+networks:
+  webnet: # Sieć typu overlay dla komunikacji między usługami w Swarm
+    driver: overlay
+# Nie definiujemy tu serwisu 'mongo', bo działa on na hoście.
+# Nie definiujemy tu sieci ani wolumenów dla mongo.
+# Docker-compose automatycznie utworzy domyślną sieć typu bridge dla serwisu flask_app.

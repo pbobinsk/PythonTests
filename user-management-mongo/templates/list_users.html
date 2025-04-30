@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Lista użytkowników{% endblock %}
+
+{% block content %}
+  <article>
+    <header>
+        <h2>Lista użytkowników</h2>
+        <a href="{{ url_for('add_user') }}" role="button" style="float: right;">Dodaj nowego użytkownika</a>
+    </header>
+    {% if db_error %}
+       <p style="color: var(--pico-color-red-600);">Błąd połączenia z bazą danych. Lista użytkowników nie może być wyświetlona.</p>
+    {% elif users %}
+    <figure>
+        <table role="grid">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Imię</th>
+              <th scope="col">Email</th>
+              <th scope="col">Akcje</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for user in users %}
+            <tr>
+              <td><small>{{ user._id }}</small></td>
+              <td>{{ user.name }}</td>
+              <td>{{ user.email }}</td>
+              <td class="actions">
+                <a href="{{ url_for('edit_user', user_id=user._id) }}" role="button" class="secondary outline">Edytuj</a>
+                <form action="{{ url_for('delete_user', user_id=user._id) }}" method="post" onsubmit="return confirm('Czy na pewno chcesz usunąć użytkownika \'{{ user.name }}\'?');">
+                  <button type="submit" class="contrast outline">Usuń</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+    </figure>
+    {% else %}
+      <p>Brak użytkowników do wyświetlenia.</p>
+    {% endif %}
+  </article>
+{% endblock %}
