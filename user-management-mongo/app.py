@@ -65,7 +65,7 @@ def check_db():
 @app.context_processor
 def inject_current_year():
     """Injects the current year into all templates."""
-    return {'current_year': datetime.datetime.now().year}
+    return {'current_year': datetime.datetime.now().year,'db':MONGODB_URI}
 # ---------------------------------------------
 
 

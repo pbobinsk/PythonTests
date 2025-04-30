@@ -11,8 +11,8 @@ services:
       FLASK_ENV: development
       FLASK_APP: app.py # Zmień na nazwę pliku startowego
       SECRET_KEY: 'sekretny-klucz-tylko-dla-lokalnego-developmentu-zmien-mnie!'
-      MONGODB_URI: 'mongodb+srv://pbouser:1q2w3e4r@pbocluster0.ukvof.mongodb.net/userdb?retryWrites=true&w=majority'
-      # MONGODB_URI: 'mongodb://host.docker.internal:27017/usersdb'
+      # MONGODB_URI: 'mongodb+srv://pbouser:1q2w3e4r@pbocluster0.ukvof.mongodb.net/userdb?retryWrites=true&w=majority'
+      MONGODB_URI: 'mongodb://host.docker.internal:27017/usersdb'
     volumes:
       # Opcjonalnie: mapuj kod dla łatwego developmentu
       - ./:/app
