@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  flask_app:
+    build: ./backend
+    ports:
+      - "5000:5000" # Mapuje port 5000 kontenera na port 5000 hosta
+    volumes:
+      - ./backend:/app # Synchronizacja kodu dla dewelopmentu (zmiany w kodzie odświeżą aplikację)
+    environment:
+      - FLASK_ENV=development # Tryb deweloperski Flaska (automatyczne przeładowanie)
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis # Uruchom Redis przed aplikacją Flask
+    networks:
+      - app-network
+
+  redis:
+    image: "redis:alpine" # Oficjalny obraz Redis
+    ports:
+      - "6379:6379" # Opcjonalne: mapowanie portu Redisa na hosta (do debugowania z redis-cli)
+    volumes:
+      - redis_data:/data # Trwałość danych Redisa (opcjonalne dla cache)
+    networks:
+      - app-network
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80" # Mapuje port 80 kontenera Nginx na port 8080 hosta
+    volumes:
+      - ./frontend:/usr/share/nginx/html # Synchronizacja dla dewelopmentu (zmiany w HTML/JS)
+    depends_on:
+      - flask_app # Upewnij się, że backend jest dostępny
+    networks:
+      - app-network
+
+volumes:
+  redis_data: # Definicja wolumenu dla danych Redisa
+
+networks:
+  app-network: # Definicja sieci, aby kontenery mogły się komunikować po nazwach serwisów
+    driver: bridge

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask + Redis Cache Demo</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; }
+        #app {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: auto;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover { background-color: #0056b3; }
+        .fact-container { margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 4px; background-color: #e9ecef;}
+        .source { font-size: 0.8em; color: #666; margin-top: 10px; }
+        .loading { font-style: italic; color: #777; }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>Losowy Fakt (z Cache!)</h1>
+        <button @click="fetchFact" :disabled="loading">
+            {{ loading ? 'Pobieranie...' : 'Pobierz nowy fakt' }}
+        </button>
+        <div v-if="fact" class="fact-container">
+            <p><strong>Fakt:</strong> {{ fact }}</p>
+            <p class="source">Źródło: {{ source }} ({{ timestamp }})</p>
+            <p class="source">Cache wygasa za {{ CACHE_EXPIRATION_SECONDS }} sekund.</p>
+        </div>
+        <div v-if="error" style="color: red; margin-top: 10px;">
+            {{ error }}
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
