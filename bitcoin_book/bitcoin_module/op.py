@@ -1,6 +1,6 @@
 import hashlib
 
-from helper import (
+from bitcoin_module.helper import (
     hash160,
     hash256,
 )

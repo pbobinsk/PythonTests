@@ -68,3 +68,33 @@ def int_to_little_endian(n, length):
     w porządku little endian o długości'''
     # wykorzystaj n.to_bytes()
     return n.to_bytes(length, 'little')
+
+def read_varint(s):
+    '''read_varint odczytuje wartość typu varint ze strumienia'''
+    i = s.read(1)[0]
+    if i == 0xfd:
+        # 0xfd oznacza, że 2 kolejne bajty określają wartość
+        return little_endian_to_int(s.read(2))
+    elif i == 0xfe:
+        # 0xfe oznacza, że 4 kolejne bajty określają wartość
+        return little_endian_to_int(s.read(4))
+    elif i == 0xff:
+        # 0xff oznacza, że 8 kolejnych bajtów określa wartość
+        return little_endian_to_int(s.read(8))
+    else:
+        # Każda inna wartość to po prostu liczba całkowita
+        return i
+
+
+def encode_varint(i):
+    '''Koduje wartość integer, w formacie varint'''
+    if i < 0xfd:
+        return bytes([i])
+    elif i < 0x10000:
+        return b'\xfd' + int_to_little_endian(i, 2)
+    elif i < 0x100000000:
+        return b'\xfe' + int_to_little_endian(i, 4)
+    elif i < 0x10000000000000000:
+        return b'\xff' + int_to_little_endian(i, 8)
+    else:
+        raise ValueError('za duża wartość typu int: {}'.format(i))
