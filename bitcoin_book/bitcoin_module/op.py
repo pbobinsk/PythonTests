@@ -1,11 +1,14 @@
 import hashlib
 
+from unittest import TestCase
+
 from bitcoin_module.helper import (
     hash160,
     hash256,
 )
 
 
+# tag::source3[]
 def encode_num(num):
     if num == 0:
         return b''
@@ -15,9 +18,6 @@ def encode_num(num):
     while abs_num:
         result.append(abs_num & 0xff)
         abs_num >>= 8
-    # jeśli ustawiony najwyższy bit,
-    # dla liczb ujemnych zapewniamy, aby najwyższy bit był ustawiony
-    # dla liczb dodatnich zapewniamy, aby najwyższy bit nie był ustawiony
     if result[-1] & 0x80:
         if negative:
             result.append(0x80)
@@ -31,9 +31,7 @@ def encode_num(num):
 def decode_num(element):
     if element == b'':
         return 0
-    # odwrotnie dla big endian
     big_endian = element[::-1]
-    # najwyższy bit o wartości 1 oznacza, że to wartość ujemna
     if big_endian[0] & 0x80:
         negative = True
         result = big_endian[0] & 0x7f
@@ -52,6 +50,7 @@ def decode_num(element):
 def op_0(stack):
     stack.append(encode_num(0))
     return True
+# end::source3[]
 
 
 def op_1negate(stack):
@@ -305,11 +304,13 @@ def op_drop(stack):
     return True
 
 
+# tag::source1[]
 def op_dup(stack):
-    if len(stack) < 1:
+    if len(stack) < 1:  # <1>
         return False
-    stack.append(stack[-1])
+    stack.append(stack[-1])  # <2>
     return True
+# end::source1[]
 
 
 def op_nip(stack):
@@ -464,6 +465,15 @@ def op_sub(stack):
     element1 = decode_num(stack.pop())
     element2 = decode_num(stack.pop())
     stack.append(encode_num(element2 - element1))
+    return True
+
+
+def op_mul(stack):
+    if len(stack) < 2:
+        return False
+    element1 = decode_num(stack.pop())
+    element2 = decode_num(stack.pop())
+    stack.append(encode_num(element2 * element1))
     return True
 
 
@@ -629,18 +639,30 @@ def op_sha256(stack):
 
 
 def op_hash160(stack):
+    # sprawdź, czy na stosie znajduje się co najmniej 1 element
+    # zdejmij element ze szczytu stosu
+    # odłóż hash160 zdjętego ze stosu elementu z powrotem na stos
     raise NotImplementedError
 
 
+# tag::source2[]
 def op_hash256(stack):
     if len(stack) < 1:
         return False
     element = stack.pop()
     stack.append(hash256(element))
     return True
+# end::source2[]
 
 
 def op_checksig(stack, z):
+    # sprawdź, czy na stosie znajdują się co najmniej 2 elementy
+    # elementem na szczycie stosu jest SEC pubkey
+    # kolejnym elementem na stosie jest podpis DER
+    # weź ostatni bajt podpisu, ponieważ jest to hash_type (określa rodzaj skrótu)
+    # przetwórz klucz publiczny i podpis, tworząc ich obiekty
+    # zweryfikuj podpis za pomocą S256Point.verify()
+    # odłóż na stos zakodowaną wartość 1 lub 0 w zależności od tego, czy podpis został zweryfikowany, czy nie
     raise NotImplementedError
 
 
@@ -689,6 +711,24 @@ def op_checksequenceverify(stack, version, sequence):
         elif element & 0xffff > sequence & 0xffff:
             return False
     return True
+
+
+class OpTest(TestCase):
+
+    def test_op_hash160(self):
+        stack = [b'hello world']
+        self.assertTrue(op_hash160(stack))
+        self.assertEqual(
+            stack[0].hex(),
+            'd7d5ee7824ff93f94c3055af9382c86c68b5ca92')
+
+    def test_op_checksig(self):
+        z = 0x7c076ff316692a3d7eb3c3bb0f8b1488cf72e1afcd929e29307032997a838a3d
+        sec = bytes.fromhex('04887387e452b8eacc4acfde10d9aaf7f6d9a0f975aabb10d006e4da568744d06c61de6d95231cd89026e286df3b6ae4a894a3378e393e93a0f45b666329a0ae34')
+        sig = bytes.fromhex('3045022000eff69ef2b1bd93a66ed5219add4fb51e11a840f404876325a1e8ffe0529a2c022100c7207fee197d27c618aea621406f6bf5ef6fca38681d82b2f06fddbdce6feab601')
+        stack = [sig, sec]
+        self.assertTrue(op_checksig(stack, z))
+        self.assertEqual(decode_num(stack[0]), 1)
 
 
 OP_CODE_FUNCTIONS = {
@@ -745,6 +785,7 @@ OP_CODE_FUNCTIONS = {
     146: op_0notequal,
     147: op_add,
     148: op_sub,
+    149: op_mul,
     154: op_booland,
     155: op_boolor,
     156: op_numequal,
@@ -837,6 +878,7 @@ OP_CODE_NAMES = {
     146: 'OP_0NOTEQUAL',
     147: 'OP_ADD',
     148: 'OP_SUB',
+    149: 'OP_MUL',
     154: 'OP_BOOLAND',
     155: 'OP_BOOLOR',
     156: 'OP_NUMEQUAL',
