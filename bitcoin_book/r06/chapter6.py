@@ -21,3 +21,5 @@ if __name__ == "__main__":
     run_all(misc_tests.HelperTest)
     run_all(misc_tests.TxTest)
     
+    run_all(misc_tests.OpTest)
+    run_all(misc_tests.ScriptTest)
