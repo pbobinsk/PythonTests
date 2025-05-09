@@ -21,19 +21,19 @@ class TxFetcher:
     @classmethod
     def get_url(cls, testnet=False):
         if testnet:
-            return 'http://testnet.programmingbitcoin.com'
+            return 'https://blockstream.info/testnet/api/'
         else:
-            return 'http://mainnet.programmingbitcoin.com'
+            return 'https://blockstream.info/api/'
 
     @classmethod
     def fetch(cls, tx_id, testnet=False, fresh=False):
         if fresh or (tx_id not in cls.cache):
-            url = '{}/tx/{}.hex'.format(cls.get_url(testnet), tx_id)
+            url = '{}/tx/{}/hex'.format(cls.get_url(testnet), tx_id)
             response = requests.get(url)
             try:
                 raw = bytes.fromhex(response.text.strip())
             except ValueError:
-                raise ValueError('nieoczekiwana odpowiedź: {}'.format(response.text))
+                raise ValueError('unexpected response: {}'.format(response.text))
             if raw[4] == 0:
                 raw = raw[:4] + raw[6:]
                 tx = Tx.parse(BytesIO(raw), testnet=testnet)
@@ -41,12 +41,23 @@ class TxFetcher:
             else:
                 tx = Tx.parse(BytesIO(raw), testnet=testnet)
             if tx.id() != tx_id:  # <1>
-                raise ValueError('różne identyfikatory: {} vs {}'.format(tx.id(), 
+                raise ValueError('not the same id: {} vs {}'.format(tx.id(), 
                                   tx_id))
             cls.cache[tx_id] = tx
         cls.cache[tx_id].testnet = testnet
         return cls.cache[tx_id]
     # end::source7[]
+
+    @classmethod
+    def get_hex(cls, tx_id, testnet=False, fresh=False):
+        url = '{}/tx/{}/hex'.format(cls.get_url(testnet), tx_id)
+        response = requests.get(url)
+        try:
+            raw = response.text.strip()
+        except ValueError:
+            raise ValueError('unexpected response: {}'.format(response.text))
+        return raw
+
 
     @classmethod
     def load_cache(cls, filename):
@@ -122,7 +133,12 @@ class Tx:
         inputs = []
         for _ in range(num_inputs):
             inputs.append(TxIn.parse(s))
-        return cls(version, inputs, None, None, testnet=testnet)
+        num_outputs = read_varint(s)
+        outputs = []
+        for _ in range(num_outputs):
+            outputs.append(TxOut.parse(s))
+        locktime = little_endian_to_int(s.read(4))
+        return cls(version, inputs, outputs, locktime, testnet=testnet)
 
 
     # tag::source6[]
@@ -139,13 +155,14 @@ class Tx:
         return result
     # end::source6[]
 
-    def fee(self):
+    def fee(self, testnet=False):
         '''Zwraca opłatę dla tej transakcji w satoshi'''
-        # zainicjuj sumę wejść i sumę wyjść
-        # użyj TxIn.value (), aby zsumować kwoty z wejść
-        # użyj TxOut.amount, aby zsumować kwoty z wyjść
-        # fee (opłata) to suma wejść - suma wyjść
-        raise NotImplementedError
+        input_sum, output_sum = 0, 0
+        for tx_in in self.tx_ins:
+            input_sum += tx_in.value(testnet=testnet)
+        for tx_out in self.tx_outs:
+            output_sum += tx_out.amount
+        return input_sum - output_sum
 
 
 # tag::source2[]
@@ -228,10 +245,9 @@ class TxOut:
         '''Interpretuje tx_output na początku strumienia bajtów;
         zwraca obiekt TxOut
         '''
-        # kwota (amount) jest 8-bajtową liczbą całkowitą w porządku little-endian
-        # aby uzyskać ScriptPubKey, użyj Script.parse
-        # zwraca instancję klasy (argumenty, zobacz w __init__)
-        raise NotImplementedError
+        amount = little_endian_to_int(s.read(8))
+        script_pubkey = Script.parse(s)
+        return cls(amount, script_pubkey)
 
     # tag::source4[]
     def serialize(self):  # <1>
