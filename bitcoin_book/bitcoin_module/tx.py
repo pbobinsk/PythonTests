@@ -164,6 +164,55 @@ class Tx:
             output_sum += tx_out.amount
         return input_sum - output_sum
 
+    def sig_hash(self, input_index):
+        '''Zwraca liczbę całkowitą będącą skrótem, który musi zostać
+        podpisany dla indeksu input_index'''
+        # rozpocznij serializację od wersji
+        # użyj int_to_little_endian na 4 bajtach
+        # dodaj liczbę wejść, używając encode_varint
+        # wykonaj pętlę dla każdego wejścia, używając wyliczenia, aby otrzymać indeks wejścia
+            # jeśli indeks wejścia jest tym, które podpisujemy,
+            # ScriptSig-iem jest ScriptPubkey poprzedniej tx;
+            # w przeciwnym razie ScriptSig jest pusty
+            # dodaj serializację wejścia przy użyciu ScriptSig
+        # dodaj liczbę wyjść, używając encode_varint
+        # dodaj serializację każdego wyjścia
+        # dodaj czas blokady, używając int_to_little_endian na 4 bajtach
+        # dodaj SIGHASH_ALL, używając int_to_little_endian na 4 bajtach
+        # serializacja hash256 
+        # skonwertuj wynik na liczbę całkowitą za pomocą int.from_bytes (x, 'big')
+        raise NotImplementedError
+
+    def verify_input(self, input_index):
+        '''Określa, czy wejście ma prawidłowy podpis'''
+        # weź odpowiednie wejście
+        # weź poprzedni ScriptPubKey
+        # weź skrót podpisu (z)
+        # połącz bieżący ScriptSig z poprzednim ScriptPubKey
+        # zinterpretuj scalony skrypt
+        raise NotImplementedError
+
+    # tag::source2[]
+    def verify(self):
+        '''Zweryfikuj tę transakcję'''
+        if self.fee() < 0:  # <1>
+            return False
+        for i in range(len(self.tx_ins)):
+            if not self.verify_input(i):  # <2>
+                return False
+        return True
+    # end::source2[]
+
+    def sign_input(self, input_index, private_key):
+        # weź skrót podpisu (z)
+        # utwórz podpis DER skrótu, używając klucza prywatnego
+        # dołącz SIGHASH_ALL do DER (użyj SIGHASH_ALL.to_bytes (1, 'big'))
+        # oblicz SEC
+        # zainicjuj nowy skrypt, używając [sig, sec] jako poleceń
+        # zmień input_script_sig na nowy skrypt
+        # zwróć prawdę, jeśli podpis sig jest poprawny, używając self.verify_input
+        raise NotImplementedError
+
 
 # tag::source2[]
 class TxIn:
