@@ -104,6 +104,7 @@ class Script:
 
     # tag::source5[]
     def evaluate(self, z):
+        LOGGER.info('evaluate start')
         cmds = self.cmds[:]  # <1>
         stack = []
         altstack = []
@@ -111,6 +112,9 @@ class Script:
             cmd = cmds.pop(0)
             if type(cmd) == int:
                 operation = OP_CODE_FUNCTIONS[cmd]  # <3>
+                LOGGER.info('cmd '+str(cmd)+ ' hex '+str(hex(cmd))+' code '+ OP_CODE_NAMES[cmd])
+                LOGGER.info('z '+str(z)+ ' hex '+str(hex(z)))
+                
                 if cmd in (99, 100):  # <4>
                     if not operation(stack, cmds):
                         LOGGER.info('zła op: {}'.format(OP_CODE_NAMES[cmd]))
@@ -128,7 +132,9 @@ class Script:
                         LOGGER.info('zła op: {}'.format(OP_CODE_NAMES[cmd]))
                         return False
             else:
+                LOGGER.info('cmd not int '+ str(cmd))
                 stack.append(cmd)  # <7>
+            LOGGER.info('stack '+ str(toints(stack)))
         if len(stack) == 0:
             return False  # <8>
         if stack.pop() == b'':
@@ -136,3 +142,5 @@ class Script:
         return True  # <10>
     # end::source5[]
 
+def toints(s):
+    return [int.from_bytes(b, byteorder='little') for b in s]
