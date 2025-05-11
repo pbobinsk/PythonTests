@@ -10,6 +10,7 @@ from bitcoin_module.helper import (
     int_to_little_endian,
     little_endian_to_int,
     read_varint,
+    SIGHASH_ALL
 )
 from bitcoin_module.script import Script
 
@@ -30,6 +31,7 @@ class TxFetcher:
         if fresh or (tx_id not in cls.cache):
             url = '{}/tx/{}/hex'.format(cls.get_url(testnet), tx_id)
             response = requests.get(url)
+            print('fetching '+url)
             try:
                 raw = bytes.fromhex(response.text.strip())
             except ValueError:
@@ -157,11 +159,15 @@ class Tx:
 
     def fee(self, testnet=False):
         '''Zwraca opłatę dla tej transakcji w satoshi'''
-        input_sum, output_sum = 0, 0
+        input_sum, output_sum, i = 0, 0, 0
+        print('fee start')
         for tx_in in self.tx_ins:
+            print(i)
+            i += 1 
             input_sum += tx_in.value(testnet=testnet)
         for tx_out in self.tx_outs:
             output_sum += tx_out.amount
+        print(f'inputs {input_sum} outputs {output_sum}')
         return input_sum - output_sum
 
     def sig_hash(self, input_index):
@@ -181,7 +187,29 @@ class Tx:
         # dodaj SIGHASH_ALL, używając int_to_little_endian na 4 bajtach
         # serializacja hash256 
         # skonwertuj wynik na liczbę całkowitą za pomocą int.from_bytes (x, 'big')
-        raise NotImplementedError
+        s = int_to_little_endian(self.version, 4)
+        s += encode_varint(len(self.tx_ins))
+        for i, tx_in in enumerate(self.tx_ins):
+            if i == input_index:
+                s += TxIn(
+                    prev_tx=tx_in.prev_tx,
+                    prev_index=tx_in.prev_index,
+                    script_sig=tx_in.script_pubkey(self.testnet),
+                    sequence=tx_in.sequence,
+                ).serialize()
+            else:
+                s += TxIn(
+                    prev_tx=tx_in.prev_tx,
+                    prev_index=tx_in.prev_index,
+                    sequence=tx_in.sequence,
+                ).serialize()
+        s += encode_varint(len(self.tx_outs))
+        for tx_out in self.tx_outs:
+            s += tx_out.serialize()
+        s += int_to_little_endian(self.locktime, 4)
+        s += int_to_little_endian(SIGHASH_ALL, 4)
+        h256 = hash256(s)
+        return int.from_bytes(h256, 'big')
 
     def verify_input(self, input_index):
         '''Określa, czy wejście ma prawidłowy podpis'''
@@ -190,14 +218,21 @@ class Tx:
         # weź skrót podpisu (z)
         # połącz bieżący ScriptSig z poprzednim ScriptPubKey
         # zinterpretuj scalony skrypt
-        raise NotImplementedError
+        tx_in = self.tx_ins[input_index]
+        script_pubkey = tx_in.script_pubkey(testnet=self.testnet)
+        z = self.sig_hash(input_index)
+        combined = tx_in.script_sig + script_pubkey
+        return combined.evaluate(z)
 
     # tag::source2[]
     def verify(self):
         '''Zweryfikuj tę transakcję'''
+        print(f'inputs: {len(self.tx_ins)}')
         if self.fee() < 0:  # <1>
             return False
+        print('verify')
         for i in range(len(self.tx_ins)):
+            print(i)
             if not self.verify_input(i):  # <2>
                 return False
         return True
@@ -211,7 +246,12 @@ class Tx:
         # zainicjuj nowy skrypt, używając [sig, sec] jako poleceń
         # zmień input_script_sig na nowy skrypt
         # zwróć prawdę, jeśli podpis sig jest poprawny, używając self.verify_input
-        raise NotImplementedError
+        z = self.sig_hash(input_index)
+        der = private_key.sign(z).der()
+        sig = der + SIGHASH_ALL.to_bytes(1, 'big')
+        sec = private_key.point.sec()
+        self.tx_ins[input_index].script_sig = Script([sig, sec])
+        return self.verify_input(input_index)
 
 
 # tag::source2[]

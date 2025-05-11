@@ -3,6 +3,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from bitcoin_module.helper import run, run_all, hash256, little_endian_to_int
 import bitcoin_module.ecc_tests as ecc_tests
+import bitcoin_module.misc_tests as misc_tests
+
 from bitcoin_module.ecc import PrivateKey, PublicKey
 import hashlib
 
@@ -17,7 +19,7 @@ if __name__ == "__main__":
 
     run_all(ecc_tests.SignatureTest)
 
-    run_all(ecc_tests.HelperTest)
+    run_all(misc_tests.HelperTest)
 
 
 # Przykładowa wiadomość
@@ -69,3 +71,6 @@ secret = little_endian_to_int(hash256(passphrase))
 priv = PrivateKey(secret)
 print("Address Testnet")
 print(priv.point.address(testnet=True))
+
+wif_testnet = priv.wif(compressed=True, testnet=True)
+print(f"Private Key WIF (Testnet, Compressed): {wif_testnet}")
