@@ -1,5 +1,5 @@
 from io import BytesIO
-from unittest import TestCase
+from logging import getLogger
 
 import json
 import requests
@@ -13,6 +13,8 @@ from bitcoin_module.helper import (
     SIGHASH_ALL
 )
 from bitcoin_module.script import Script
+
+LOGGER = getLogger(__name__)
 
 
 # tag::source7[]
@@ -31,7 +33,7 @@ class TxFetcher:
         if fresh or (tx_id not in cls.cache):
             url = '{}/tx/{}/hex'.format(cls.get_url(testnet), tx_id)
             response = requests.get(url)
-            print('fetching '+url)
+            LOGGER.info('fetching '+url)
             try:
                 raw = bytes.fromhex(response.text.strip())
             except ValueError:
@@ -160,14 +162,14 @@ class Tx:
     def fee(self, testnet=False):
         '''Zwraca opłatę dla tej transakcji w satoshi'''
         input_sum, output_sum, i = 0, 0, 0
-        print('fee start')
+        LOGGER.info('fee start')
         for tx_in in self.tx_ins:
-            print(i)
+            LOGGER.info(i)
             i += 1 
             input_sum += tx_in.value(testnet=testnet)
         for tx_out in self.tx_outs:
             output_sum += tx_out.amount
-        print(f'inputs {input_sum} outputs {output_sum}')
+        LOGGER.info(f'inputs {input_sum} outputs {output_sum}')
         return input_sum - output_sum
 
     def sig_hash(self, input_index):
@@ -227,12 +229,12 @@ class Tx:
     # tag::source2[]
     def verify(self):
         '''Zweryfikuj tę transakcję'''
-        print(f'inputs: {len(self.tx_ins)}')
+        LOGGER.info(f'inputs: {len(self.tx_ins)}')
         if self.fee() < 0:  # <1>
             return False
-        print('verify')
+        LOGGER.info('verify')
         for i in range(len(self.tx_ins)):
-            print(i)
+            LOGGER.info(i)
             if not self.verify_input(i):  # <2>
                 return False
         return True
