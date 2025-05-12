@@ -221,3 +221,37 @@ if __name__ == "__main__":
     print(tx_obj.fee())
     print('tx fee end')
     print(target_satoshis + change_satoshis)
+
+
+    print('Tworzenie własnych transakcji w testnecie')
+    print('Drugi adres')
+
+    prev_tx_1 = bytes.fromhex('8cac2c4c30aca93ce157cb8428c0c398a7bbbf8ad7ddf9380dbc1f7626527e66')
+    prev_index_1 = 1
+    prev_tx_2 = bytes.fromhex('8e002ed019aa5931634d1cb3e4783089a279e163f4b17fa9a9cb2bdf47730d26')
+    prev_index_2 = 2
+    target_address = 'mnVxMqyVjWTxaUU1BJGUSQMTUWNk6LQqEA'
+    target_amount = 0.000075
+    
+    passphrase = b'pbobinsk@gmail.com my another super secret pbobinski'
+    secret = little_endian_to_int(hash256(passphrase))
+    
+    priv = PrivateKey(secret=secret)
+    tx_ins = []
+    tx_ins.append(TxIn(prev_tx_1, prev_index_1))
+    tx_ins.append(TxIn(prev_tx_2, prev_index_2))
+    tx_outs = []
+    h160 = decode_base58(target_address)
+    script_pubkey = p2pkh_script(h160)
+    target_satoshis = int(target_amount*100000000)
+    tx_outs.append(TxOut(target_satoshis, script_pubkey))
+    tx_obj = Tx(1, tx_ins, tx_outs, 0, testnet=True)
+    print(tx_obj.sign_input(0, priv))
+    print(tx_obj.sign_input(1, priv))
+    print('---')
+    print(tx_obj.serialize().hex())
+    print('---')
+    print('tx fee')
+    print(tx_obj.fee())
+    print('tx fee end')
+    print(target_satoshis + change_satoshis)
