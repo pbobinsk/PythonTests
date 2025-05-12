@@ -6,6 +6,15 @@ from io import BytesIO
 
 from bitcoin_module.helper import encode_base58_checksum, hash160
 
+
+try:
+    import bech32
+    BECH32_IMPLEMENTED = True
+except ImportError:
+    BECH32_IMPLEMENTED = False
+    print("UWAGA: Biblioteka 'bech32' nie jest zainstalowana.")
+    print("Aby wygenerować adresy SegWit (Bech32), zainstaluj ją: pip install bech32")
+
 class FieldElement:
 
     def __init__(self, num, prime):
@@ -249,6 +258,42 @@ class S256Point(Point):
             prefix = b'\x00'
         return encode_base58_checksum(prefix + h160)
     # end::source5[]
+
+
+    # --- NOWA METODA dla P2WPKH (Native SegWit / Bech32) ---
+    def address_segwit_p2wpkh(self, testnet=False):
+        '''Zwraca łańcuch adresu P2WPKH (Native SegWit, Bech32)'''
+        if not BECH32_IMPLEMENTED:
+            print("Nie można wygenerować adresu SegWit - brak biblioteki 'bech32'.")
+            return None
+
+        # Krok 1: Pobierz hash160 *skompresowanego* klucza publicznego (wymóg dla P2WPKH)
+        h160_compressed = self.hash160(compressed=True) # To już są bajty
+
+        # Krok 2: Ustaw wersję świadka (dla P2WPKH/P2WSH jest to 0)
+        witness_version = 0
+
+        # Krok 3: Określ Human-Readable Part (HRP)
+        if testnet:
+            hrp = 'tb' # HRP dla Testnet Bech32
+        else:
+            hrp = 'bc' # HRP dla Mainnet Bech32
+
+        # Krok 4: Przygotuj dane do zakodowania
+        # bech32.encode wymaga listy integerów: [wersja] + dane_przekonwertowane_na_5bit
+        # Funkcja convertbits konwertuje bajty (8 bitów) na grupy 5-bitowe
+        data_for_bech32 = bech32.convertbits(h160_compressed, 8, 5, pad=True)
+
+        if data_for_bech32 is None:
+             print("Błąd podczas konwersji bitów dla Bech32.")
+             return None
+
+        # Krok 5: Zakoduj używając Bech32
+        # segwit_address = bech32.encode(hrp, [witness_version] + data_for_bech32)
+        segwit_address = bech32.encode(hrp, witness_version, data_for_bech32)
+
+        return segwit_address
+
 
     # tag::source3[]
     @classmethod
