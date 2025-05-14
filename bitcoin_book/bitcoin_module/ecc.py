@@ -7,13 +7,16 @@ from io import BytesIO
 from bitcoin_module.helper import encode_base58_checksum, hash160
 
 
+# Zaimportuj funkcję encode z Twojego działającego modułu Bech32 (Sipy)
 try:
-    import bech32
-    BECH32_IMPLEMENTED = True
+    # Załóżmy, że plik Sipy nazwałeś bech32_sipa.py
+    # i interesuje nas funkcja 'encode' zdefiniowana na końcu tego pliku
+    from bitcoin_module.bech32_sipa import encode as sipa_bech32_segwit_encode 
+    print("--- Zaimportowano 'encode' jako 'sipa_bech32_segwit_encode' z bech32_sipa.py ---")
 except ImportError:
-    BECH32_IMPLEMENTED = False
-    print("UWAGA: Biblioteka 'bech32' nie jest zainstalowana.")
-    print("Aby wygenerować adresy SegWit (Bech32), zainstaluj ją: pip install bech32")
+    print("BŁĄD: Nie można zaimportować funkcji 'encode' z 'bech32_sipa.py'.")
+    print("Upewnij się, że plik 'bech32_sipa.py' (z implementacją Sipy) jest w tym samym katalogu.")
+    exit()
 
 class FieldElement:
 
@@ -294,6 +297,64 @@ class S256Point(Point):
 
         return segwit_address
 
+    def generate_p2wpkh_address_from_privkey_secret(self, testnet=True):
+        """
+        Generuje adres P2WPKH (Native SegWit) na podstawie sekretu klucza prywatnego.
+        """
+
+        # 2. Uzyskaj punkt klucza publicznego (S256Point)
+        public_key_point = self
+
+        # 3. Uzyskaj skompresowany klucz publiczny w formacie SEC (bajty)
+        compressed_pubkey_bytes = public_key_point.sec(compressed=True)
+        # print(f"DEBUG: Skompresowany Klucz Publiczny (hex): {compressed_pubkey_bytes.hex()}")
+
+        # 4. Oblicz HASH160 skompresowanego klucza publicznego (to jest program świadka)
+        witness_program_bytes = hash160(compressed_pubkey_bytes)
+        # print(f"DEBUG: Program Świadka (HASH160) (hex): {witness_program_bytes.hex()}")
+
+        # 5. Ustaw wersję świadka (dla P2WPKH zawsze 0)
+        witness_version = 0
+
+        # 6. Ustaw Human-Readable Part (HRP)
+        if testnet:
+            hrp = 'tb'  # Dla Testnet
+        else:
+            hrp = 'bc'  # Dla Mainnet
+
+        # ... (poprzednie kroki do witness_version i hrp) ...
+
+        # 7. Przygotuj dane do zakodowania dla bech32.encode
+        try:
+            # Konwertuj 8-bitowe bajty programu świadka (HASH160) na 5-bitowe grupy integerów
+            # To jest właśnie 'witprog' (witness program)
+            converted_witness_program = bech32.convertbits(witness_program_bytes, 8, 5, True)
+            if converted_witness_program is None:
+                print("Błąd podczas konwersji bitów dla programu świadka.")
+                return None
+            
+            # Użyj bech32.encode z trzema argumentami: hrp, wersja świadka, program świadka (5-bitowy)
+            # To jest sygnatura, która zadziałała poprzednio w metodzie klasowej
+            segwit_address = bech32.encode(hrp, witness_version, converted_witness_program) # <--- POPRAWKA TUTAJ
+
+        except AttributeError as e:
+            print(f"Błąd atrybutu w module bech32: {e}. Może inna nazwa funkcji lub sygnatura?")
+            return None
+        except TypeError as e: # Dodatkowa obsługa błędu typu, jeśli sygnatura jest nadal nie taka
+            print(f"Błąd typu podczas kodowania Bech32 (prawdopodobnie zła liczba/typ argumentów): {e}")
+            print(f"  HRP: {hrp} (typ: {type(hrp)})")
+            print(f"  Witness Version: {witness_version} (typ: {type(witness_version)})")
+            print(f"  Converted Witness Program: {converted_witness_program if 'converted_witness_program' in locals() else 'Error'} (typ: {type(converted_witness_program) if 'converted_witness_program' in locals() else 'Error'})")
+            if 'converted_witness_program' in locals() and converted_witness_program is not None:
+                print(f"    Pierwsze elementy converted_witness_program: {list(converted_witness_program)[:5]}")
+            return None
+        except Exception as e:
+            print(f"Inny błąd podczas kodowania Bech32: {e}")
+            return None
+
+        return segwit_address
+
+
 
     # tag::source3[]
     @classmethod
@@ -450,4 +511,54 @@ class PublicKey:
     
     def __repr__(self):
         return f"PublicKey(x={hex(self.point.x.num)}, y={hex(self.point.y.num)})"
+
+
+def generate_p2wpkh_address(secret_int, testnet=True):
+    """
+    Generuje adres P2WPKH (Native SegWit) na podstawie sekretu klucza prywatnego (liczby całkowitej).
+
+    Args:
+        secret_int (int): Sekret klucza prywatnego jako liczba całkowita.
+        testnet (bool): True, jeśli adres ma być dla sieci Testnet, False dla Mainnet.
+
+    Returns:
+        str: Adres P2WPKH w formacie Bech32 lub None w przypadku błędu.
+    """
+    # 1. Utwórz obiekt PrivateKey z biblioteki Jimmy'ego Songa
+    private_key = PrivateKey(secret=secret_int)
+
+    # 2. Uzyskaj punkt klucza publicznego (S256Point)
+    public_key_point = private_key.point
+
+    # 3. Uzyskaj skompresowany klucz publiczny w formacie SEC (bajty)
+    # Adresy P2WPKH ZAWSZE używają skompresowanego klucza publicznego.
+    compressed_pubkey_bytes = public_key_point.sec(compressed=True)
+    # print(f"DEBUG: Skompresowany Klucz Publiczny (hex): {compressed_pubkey_bytes.hex()}")
+
+    # 4. Oblicz HASH160 skompresowanego klucza publicznego (to jest program świadka dla P2WPKH)
+    # Wynik powinien być 20-bajtowy.
+    witness_program_8bit_bytes = hash160(compressed_pubkey_bytes)
+    # print(f"DEBUG: Program Świadka (HASH160) (hex): {witness_program_8bit_bytes.hex()}")
+    # print(f"DEBUG: Długość Programu Świadka (HASH160): {len(witness_program_8bit_bytes)} bajtów")
+
+
+    # 5. Ustaw wersję świadka (dla P2WPKH zawsze 0)
+    witness_version = 0
+
+    # 6. Ustaw Human-Readable Part (HRP)
+    hrp = 'tb' if testnet else 'bc'
+
+    # 7. Zakoduj używając funkcji 'encode' z modułu Sipy (bech32_sipa.py)
+    # Ta funkcja oczekuje: hrp (string), witver (int), witprog (sekwencja intów reprezentujących bajty, np. obiekt bytes)
+    try:
+        segwit_address = sipa_bech32_segwit_encode(hrp, witness_version, witness_program_8bit_bytes)
+        if segwit_address is None:
+            print("BŁĄD: Kodowanie Bech32 zwróciło None (prawdopodobnie niepoprawne dane wejściowe dla wewnętrznych walidacji).")
+            print(f"  HRP: {hrp}, Wersja: {witness_version}, Długość Programu: {len(witness_program_8bit_bytes)}")
+            return None
+    except Exception as e:
+        print(f"BŁĄD podczas kodowania Bech32 (sipa_bech32_segwit_encode): {e}")
+        return None
+
+    return segwit_address
 

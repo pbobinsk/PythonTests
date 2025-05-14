@@ -5,7 +5,7 @@ from bitcoin_module.helper import run, run_all, hash256, little_endian_to_int
 import bitcoin_module.ecc_tests as ecc_tests
 import bitcoin_module.misc_tests as misc_tests
 
-from bitcoin_module.ecc import PrivateKey, PublicKey
+from bitcoin_module.ecc import PrivateKey, PublicKey, generate_p2wpkh_address
 import hashlib
 
 if __name__ == "__main__":
@@ -82,7 +82,10 @@ secret = little_endian_to_int(hash256(passphrase))
 priv = PrivateKey(secret)
 print("Address Testnet 2")
 print(priv.point.address(testnet=True))
-print(priv.point.address_segwit_p2wpkh(testnet=True))
+# print(priv.point.address_segwit_p2wpkh(testnet=True))
+print(generate_p2wpkh_address(secret,testnet=True))
+# print(priv.point.generate_p2wpkh_address_from_privkey_secret(testnet=True))
+
 
 wif_testnet = priv.wif(compressed=True, testnet=True)
 print(f"Private Key WIF 2 (Testnet, Compressed): {wif_testnet}")

@@ -2,6 +2,15 @@ from unittest import TestSuite, TextTestRunner, TestLoader
 
 import hashlib
 
+
+try:
+    import bech32
+    BECH32_IMPLEMENTED = True
+except ImportError:
+    BECH32_IMPLEMENTED = False
+    print("UWAGA: Biblioteka 'bech32' nie jest zainstalowana.")
+    print("Aby wygenerować adresy SegWit (Bech32), zainstaluj ją: pip install bech32")
+
 def run(test):
     suite = TestSuite()
     suite.addTest(test)
@@ -115,3 +124,5 @@ def h160_to_p2sh_address(h160, testnet=False):
     # p2sh ma prefiks b'\x05’ dla mainnetu, b'\xc4' dla testnetu
     # aby otrzymać adres, użyj encode_base58_checksum
     raise NotImplementedError
+
+
