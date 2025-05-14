@@ -82,9 +82,8 @@ secret = little_endian_to_int(hash256(passphrase))
 priv = PrivateKey(secret)
 print("Address Testnet 2")
 print(priv.point.address(testnet=True))
-# print(priv.point.address_segwit_p2wpkh(testnet=True))
+print(priv.point.address_segwit_p2wpkh(testnet=True))
 print(generate_p2wpkh_address(secret,testnet=True))
-# print(priv.point.generate_p2wpkh_address_from_privkey_secret(testnet=True))
 
 
 wif_testnet = priv.wif(compressed=True, testnet=True)

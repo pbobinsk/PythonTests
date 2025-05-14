@@ -24,6 +24,13 @@ def p2sh_script(h160):
 LOGGER = getLogger(__name__)
 
 
+def p2wpkh_script(h160_program_bytes): # Zmieniona nazwa argumentu dla jasności
+    """Tworzy ScriptPubKey dla P2WPKH (OP_0 <20-byte program witness>)."""
+    if not isinstance(h160_program_bytes, bytes) or len(h160_program_bytes) not in (20, 32): # P2WPKH to 20, P2WSH to 32
+        raise ValueError("Program witness dla P2WPKH musi mieć 20 bajtów (lub 32 dla P2WSH).")
+    # 0x00 to OP_0. Script([0x00, h160_program_bytes]) automatycznie doda pushdata.
+    return Script([0x00, h160_program_bytes]) # Lub Script([OP_0, h160_program_bytes])
+
 # tag::source1[]
 class Script:
 

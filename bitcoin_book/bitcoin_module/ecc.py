@@ -262,13 +262,9 @@ class S256Point(Point):
         return encode_base58_checksum(prefix + h160)
     # end::source5[]
 
-
     # --- NOWA METODA dla P2WPKH (Native SegWit / Bech32) ---
     def address_segwit_p2wpkh(self, testnet=False):
         '''Zwraca łańcuch adresu P2WPKH (Native SegWit, Bech32)'''
-        if not BECH32_IMPLEMENTED:
-            print("Nie można wygenerować adresu SegWit - brak biblioteki 'bech32'.")
-            return None
 
         # Krok 1: Pobierz hash160 *skompresowanego* klucza publicznego (wymóg dla P2WPKH)
         h160_compressed = self.hash160(compressed=True) # To już są bajty
@@ -282,74 +278,17 @@ class S256Point(Point):
         else:
             hrp = 'bc' # HRP dla Mainnet Bech32
 
-        # Krok 4: Przygotuj dane do zakodowania
-        # bech32.encode wymaga listy integerów: [wersja] + dane_przekonwertowane_na_5bit
-        # Funkcja convertbits konwertuje bajty (8 bitów) na grupy 5-bitowe
-        data_for_bech32 = bech32.convertbits(h160_compressed, 8, 5, pad=True)
 
-        if data_for_bech32 is None:
-             print("Błąd podczas konwersji bitów dla Bech32.")
-             return None
-
-        # Krok 5: Zakoduj używając Bech32
-        # segwit_address = bech32.encode(hrp, [witness_version] + data_for_bech32)
-        segwit_address = bech32.encode(hrp, witness_version, data_for_bech32)
-
-        return segwit_address
-
-    def generate_p2wpkh_address_from_privkey_secret(self, testnet=True):
-        """
-        Generuje adres P2WPKH (Native SegWit) na podstawie sekretu klucza prywatnego.
-        """
-
-        # 2. Uzyskaj punkt klucza publicznego (S256Point)
-        public_key_point = self
-
-        # 3. Uzyskaj skompresowany klucz publiczny w formacie SEC (bajty)
-        compressed_pubkey_bytes = public_key_point.sec(compressed=True)
-        # print(f"DEBUG: Skompresowany Klucz Publiczny (hex): {compressed_pubkey_bytes.hex()}")
-
-        # 4. Oblicz HASH160 skompresowanego klucza publicznego (to jest program świadka)
-        witness_program_bytes = hash160(compressed_pubkey_bytes)
-        # print(f"DEBUG: Program Świadka (HASH160) (hex): {witness_program_bytes.hex()}")
-
-        # 5. Ustaw wersję świadka (dla P2WPKH zawsze 0)
-        witness_version = 0
-
-        # 6. Ustaw Human-Readable Part (HRP)
-        if testnet:
-            hrp = 'tb'  # Dla Testnet
-        else:
-            hrp = 'bc'  # Dla Mainnet
-
-        # ... (poprzednie kroki do witness_version i hrp) ...
-
-        # 7. Przygotuj dane do zakodowania dla bech32.encode
+        # 7. Zakoduj używając funkcji 'encode' z modułu Sipy (bech32_sipa.py)
+        # Ta funkcja oczekuje: hrp (string), witver (int), witprog (sekwencja intów reprezentujących bajty, np. obiekt bytes)
         try:
-            # Konwertuj 8-bitowe bajty programu świadka (HASH160) na 5-bitowe grupy integerów
-            # To jest właśnie 'witprog' (witness program)
-            converted_witness_program = bech32.convertbits(witness_program_bytes, 8, 5, True)
-            if converted_witness_program is None:
-                print("Błąd podczas konwersji bitów dla programu świadka.")
+            segwit_address = sipa_bech32_segwit_encode(hrp, witness_version, h160_compressed)
+            if segwit_address is None:
+                print("BŁĄD: Kodowanie Bech32 zwróciło None (prawdopodobnie niepoprawne dane wejściowe dla wewnętrznych walidacji).")
+                print(f"  HRP: {hrp}, Wersja: {witness_version}, Długość Programu: {len(h160_compressed)}")
                 return None
-            
-            # Użyj bech32.encode z trzema argumentami: hrp, wersja świadka, program świadka (5-bitowy)
-            # To jest sygnatura, która zadziałała poprzednio w metodzie klasowej
-            segwit_address = bech32.encode(hrp, witness_version, converted_witness_program) # <--- POPRAWKA TUTAJ
-
-        except AttributeError as e:
-            print(f"Błąd atrybutu w module bech32: {e}. Może inna nazwa funkcji lub sygnatura?")
-            return None
-        except TypeError as e: # Dodatkowa obsługa błędu typu, jeśli sygnatura jest nadal nie taka
-            print(f"Błąd typu podczas kodowania Bech32 (prawdopodobnie zła liczba/typ argumentów): {e}")
-            print(f"  HRP: {hrp} (typ: {type(hrp)})")
-            print(f"  Witness Version: {witness_version} (typ: {type(witness_version)})")
-            print(f"  Converted Witness Program: {converted_witness_program if 'converted_witness_program' in locals() else 'Error'} (typ: {type(converted_witness_program) if 'converted_witness_program' in locals() else 'Error'})")
-            if 'converted_witness_program' in locals() and converted_witness_program is not None:
-                print(f"    Pierwsze elementy converted_witness_program: {list(converted_witness_program)[:5]}")
-            return None
         except Exception as e:
-            print(f"Inny błąd podczas kodowania Bech32: {e}")
+            print(f"BŁĄD podczas kodowania Bech32 (sipa_bech32_segwit_encode): {e}")
             return None
 
         return segwit_address
