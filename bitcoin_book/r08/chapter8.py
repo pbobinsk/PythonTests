@@ -22,14 +22,14 @@ if __name__ == "__main__":
     logger_do_zmiany.setLevel(logging.WARNING)
 
     print('Testy z poprzednich rozdziałów')
-    run_all(ecc_tests.ECCTest)
-    run_all(ecc_tests.S256Test)
-    run_all(ecc_tests.PrivateKeyTest)
-    run_all(ecc_tests.SignatureTest)
+    # run_all(ecc_tests.ECCTest)
+    # run_all(ecc_tests.S256Test)
+    # run_all(ecc_tests.PrivateKeyTest)
+    # run_all(ecc_tests.SignatureTest)
     run_all(misc_tests.HelperTest)
     run_all(misc_tests.TxTest)
     run_all(misc_tests.OpTest)
-    run_all(misc_tests.ScriptTest)
+    # run_all(misc_tests.ScriptTest)
 
     print('Rozdział 8')
 

@@ -114,15 +114,17 @@ def encode_varint(i):
     
 def h160_to_p2pkh_address(h160, testnet=False):
     '''Dla skrótu hash160 ciągu bajtów zwraca łańcuch adresu p2pkh'''
-    # p2pkh ma prefiks b'\x00’ dla mainnetu, b'\x6f' dla testnetu
-    # aby otrzymać adres, użyj encode_base58_checksum
-    raise NotImplementedError
-
+    if testnet:
+        prefix = b'\x6f'
+    else:
+        prefix = b'\x00'
+    return encode_base58_checksum(prefix + h160)
 
 def h160_to_p2sh_address(h160, testnet=False):
     '''Dla skrótu hash160 ciągu bajtów zwraca łańcuch adresu p2sh '''
-    # p2sh ma prefiks b'\x05’ dla mainnetu, b'\xc4' dla testnetu
-    # aby otrzymać adres, użyj encode_base58_checksum
-    raise NotImplementedError
-
+    if testnet:
+        prefix = b'\xc4'
+    else:
+        prefix = b'\x05'
+    return encode_base58_checksum(prefix + h160)
 
