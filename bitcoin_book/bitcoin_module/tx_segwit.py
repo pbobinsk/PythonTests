@@ -69,6 +69,12 @@ class TxFetcher:
             is_segwit_tx_from_network = (temp_s.read(2) == b'\x00\x01') # marker + flag
             temp_s.close()
 
+            ### ZMIANA TUTAJ: Przekazuj całe `raw` do Tx.parse ###
+            # Tx.parse powinno być w stanie obsłużyć zarówno format legacy, jak i SegWit.
+            # Nie usuwamy już markera/flagi SegWit.
+            # tx = Tx.parse(BytesIO(raw), testnet=testnet)
+            ### KONIEC ZMIANY ###
+
             if is_segwit_tx_from_network:
                 # Jeśli to transakcja SegWit, Tx.parse oczekuje pełnego formatu,
                 # ale TxFetcher w książce usuwał marker/flagę.
@@ -295,9 +301,12 @@ class Tx:
     ### SEGWIT DODANE KONIEC ###
 
 
-    def fee(self, testnet=False):
+    def fee(self):
+        testnet = self.testnet
         input_sum, output_sum = 0, 0
         LOGGER.info('fee start')
+        LOGGER.info(str(testnet))
+        
         for i, tx_in in enumerate(self.tx_ins):
             LOGGER.info(f"Pobieranie wartości dla wejścia {i}")
             try:

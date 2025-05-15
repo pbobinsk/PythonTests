@@ -162,7 +162,13 @@ if __name__ == "__main__":
     print('---')
     print(tx_obj.serialize().hex())
     print('---')
+    print(f"Serializowana transakcja SegWit (hex): {tx_obj.serialize().hex()}")
+    print(f"TXID (legacy hash): {tx_obj.id()}")
+    print(f"WTXID (witness hash): {tx_obj.wtxid()}") # Możesz też sprawdzić wtxid
     print('tx fee')
     print(tx_obj.fee())
     print('tx fee end')
     print(target_satoshis)
+
+    tx_in_segwit = TxFetcher.fetch('318f9644d9a73d7bb0935fb0f32d01e326174d547f9cc7734ed0a1c7e93b6777',testnet=True)
+
