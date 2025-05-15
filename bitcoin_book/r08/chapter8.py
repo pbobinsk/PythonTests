@@ -16,7 +16,10 @@ if __name__ == "__main__":
     
     logging.basicConfig(level=logging.INFO)
 
-    LOGGER.setLevel(logging.WARNING)
+    logger_do_zmiany = logging.getLogger('bitcoin_module.script')
+    logger_do_zmiany.setLevel(logging.WARNING)
+    logger_do_zmiany = logging.getLogger('bitcoin_module.tx')
+    logger_do_zmiany.setLevel(logging.WARNING)
 
     print('Testy z poprzednich rozdziałów')
     run_all(ecc_tests.ECCTest)

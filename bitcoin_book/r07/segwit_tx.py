@@ -11,7 +11,7 @@ from io import BytesIO
 from bitcoin_module.script import *
 
 # from bitcoin_module.tx import *
-from bitcoin_module.tx_segwit import *
+from bitcoin_module.tx import *
 
 import bitcoin_module.bech32_sipa as bech32_sipa
 import logging
@@ -172,3 +172,5 @@ if __name__ == "__main__":
 
     tx_in_segwit = TxFetcher.fetch('318f9644d9a73d7bb0935fb0f32d01e326174d547f9cc7734ed0a1c7e93b6777',testnet=True)
 
+    print(tx_in_segwit)
+    TxFetcher.dump_cache('tx.cache')
