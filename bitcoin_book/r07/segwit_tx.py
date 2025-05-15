@@ -137,3 +137,32 @@ if __name__ == "__main__":
     print(target_satoshis)
     
     
+
+    print('Tworzenie własnych transakcji w testnecie')
+    print('Teraz z SegWit')
+
+    prev_tx_1 = bytes.fromhex('318f9644d9a73d7bb0935fb0f32d01e326174d547f9cc7734ed0a1c7e93b6777')
+    prev_index_1 = 2
+    target_address = 'mnVxMqyVjWTxaUU1BJGUSQMTUWNk6LQqEA'
+    target_amount = 0.0001
+    
+    passphrase = b'pbobinsk@gmail.com my another super secret pbobinski'
+    secret = little_endian_to_int(hash256(passphrase))
+    
+    priv = PrivateKey(secret=secret)
+    tx_ins = []
+    tx_ins.append(TxIn(prev_tx_1, prev_index_1))
+    tx_outs = []
+    h160 = decode_base58(target_address)
+    script_pubkey = p2pkh_script(h160)
+    target_satoshis = int(target_amount*100000000)
+    tx_outs.append(TxOut(target_satoshis, script_pubkey))
+    tx_obj = Tx(1, tx_ins, tx_outs, 0, testnet=True, segwit=True)
+    print(tx_obj.sign_input(0, priv, amount_sats=10200, is_p2wpkh=True))
+    print('---')
+    print(tx_obj.serialize().hex())
+    print('---')
+    print('tx fee')
+    print(tx_obj.fee())
+    print('tx fee end')
+    print(target_satoshis)
