@@ -220,3 +220,37 @@ if __name__ == "__main__":
     print(tx_obj.fee())
     print('tx fee end')
     print(target_satoshis)
+
+
+
+    print('Tworzenie własnych transakcji w testnecie')
+    print('To teraz legacy na SegWit i funkcja dla programu świadka')
+    prev_tx_1 = bytes.fromhex('7f03a56a20ffa820e8c9d10c62cb2d86ba9a18110cca87211ab73659fcf152f7')
+    prev_index_1 = 0
+    target_address = 'tb1qpf4wm6s872mcj600k4uf9dwt0krmym72f8q6x3'
+    target_amount = 0.00009
+    passphrase = b'pbobinsk@gmail.com my another super secret pbobinski'
+    secret = little_endian_to_int(hash256(passphrase))
+    
+    priv = PrivateKey(secret=secret)
+    tx_ins = []
+    tx_ins.append(TxIn(prev_tx_1, prev_index_1))
+    tx_outs = []
+    script_pubkey_p2wpkh = p2wpkh_script(get_witness_programm(target_address))
+    target_satoshis = int(target_amount*100000000)
+    tx_outs.append(TxOut(target_satoshis, script_pubkey_p2wpkh))
+    tx_obj = Tx(1, tx_ins, tx_outs, 0, testnet=True)
+
+    print(f"\nUtworzony ScriptPubKey dla adresu SegWit ({target_address}):")
+    print(f"  {script_pubkey_p2wpkh.serialize().hex()}")
+    print(f"  Elementy skryptu: {script_pubkey_p2wpkh.cmds}") # Powinno być [0, <20_bajtów_hash>]
+
+    print(tx_obj.sign_input(0, priv))
+    print('--- skopiować')
+    print(tx_obj.serialize().hex())
+    print('---')
+    print('tx fee')
+    print(tx_obj.fee())
+    print('tx fee end')
+    print(target_satoshis)
+

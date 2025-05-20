@@ -2,6 +2,8 @@ from unittest import TestSuite, TextTestRunner, TestLoader
 
 import hashlib
 
+import bitcoin_module.bech32_sipa as bech32_sipa
+
 
 try:
     import bech32
@@ -128,3 +130,36 @@ def h160_to_p2sh_address(h160, testnet=False):
         prefix = b'\x05'
     return encode_base58_checksum(prefix + h160)
 
+def get_witness_programm(target_address):
+    
+    # h160 = decode_base58(target_address)
+    # 1. Zdekoduj adres Bech32 (P2WPKH) używając bech32_sipa.decode
+    hrp_expected_testnet = "tb" # Human-readable part dla adresów SegWit na testnecie
+
+    # Funkcja decode(hrp, addr) z bech32_sipa.py:
+    # - hrp: oczekiwany human-readable part (np. "tb" dla testnet, "bc" dla mainnet)
+    # - addr: adres Bech32 do zdekodowania
+    # Zwraca: (witness_version, witness_program_bytes) lub (None, None) w przypadku błędu.
+    decoded_address_data = bech32_sipa.decode(hrp_expected_testnet, target_address)
+
+    if decoded_address_data == (None, None):
+        raise ValueError(f"Niepoprawny adres SegWit ({target_address}) lub niezgodny HRP (oczekiwano '{hrp_expected_testnet}').")
+
+    witness_version, program_witness_bytes_list = decoded_address_data
+
+    # Sprawdź wersję witness i długość programu dla P2WPKH
+    if witness_version != 0:
+        # Ten kod obsługuje tylko P2WPKH (wersja 0).
+        # Dla Taproot (P2TR) wersja witness byłaby 1, a typ kodowania Bech32m.
+        raise ValueError(f"Nieobsługiwana wersja witness: {witness_version}. Oczekiwano 0 dla P2WPKH.")
+
+    if len(program_witness_bytes_list) != 20:
+        # Dla P2WPKH, program witness to 20-bajtowy HASH160(skompresowany_klucz_publiczny)
+        raise ValueError(f"Niepoprawna długość programu witness dla P2WPKH: {len(program_witness_bytes_list)} bajtów. Oczekiwano 20.")
+
+    program_witness_bytes = bytes(program_witness_bytes_list)
+
+    # h160_from_segwit_address to nasz `program_witness_bytes`
+    print(f"Zdekodowany program witness (h160) z adresu SegWit: {program_witness_bytes.hex()}")
+
+    return program_witness_bytes
