@@ -174,3 +174,49 @@ if __name__ == "__main__":
 
     print(tx_in_segwit)
     TxFetcher.dump_cache('tx.cache')
+
+
+
+    print('Tworzenie własnych transakcji w testnecie')
+    print('Teraz z SegWit na dwa legacy')
+
+    prev_tx_1 = bytes.fromhex('73c91d81b07ab53c5a5927123f2e114019606b9f4d005275b6fe4bf87c972a8c')
+    amount_sats = 358031
+    prev_index_1 = 1
+    target_address1 = 'mnVxMqyVjWTxaUU1BJGUSQMTUWNk6LQqEA'
+    target_amount = 0.0017
+    h1601 = decode_base58(target_address1)
+    script_pubkey1 = p2pkh_script(h1601)
+    target_address2 = 'mgU39Z5p3fpbDUrZ7uqg3mJj9E29fHG4aw'
+    h1602 = decode_base58(target_address2)
+    script_pubkey2 = p2pkh_script(h1602)
+    print(h1601)
+    print(h1602)
+    print(script_pubkey1)
+    print(script_pubkey2)
+    
+    
+    passphrase = b'pbobinsk@gmail.com my another super secret pbobinski'
+    secret = little_endian_to_int(hash256(passphrase))
+    
+    priv = PrivateKey(secret=secret)
+    tx_ins = []
+    tx_ins.append(TxIn(prev_tx_1, prev_index_1))
+    tx_outs = []
+    target_satoshis = int(target_amount*100000000)
+    tx_outs.append(TxOut(target_satoshis, script_pubkey1))
+    tx_outs.append(TxOut(target_satoshis, script_pubkey2))
+    tx_obj = Tx(1, tx_ins, tx_outs, 0, testnet=True, segwit=True)
+    print(tx_obj.sign_input(0, priv, amount_sats=amount_sats, is_p2wpkh=True))
+    print(tx_obj.tx_ins[0].witness)
+    print(tx_obj.tx_ins[0].script_sig.cmds)
+    print('---')
+    print(tx_obj.serialize().hex())
+    print('---')
+    print(f"Serializowana transakcja SegWit (hex): {tx_obj.serialize().hex()}")
+    print(f"TXID (legacy hash): {tx_obj.id()}")
+    print(f"WTXID (witness hash): {tx_obj.wtxid()}") # Możesz też sprawdzić wtxid
+    print('tx fee')
+    print(tx_obj.fee())
+    print('tx fee end')
+    print(target_satoshis)
