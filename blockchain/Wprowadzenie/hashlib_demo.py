@@ -1,5 +1,11 @@
 import hashlib
 
+'''
+encode('utf-8') jest potrzebne, bo funkcje hashujące operują na bajtach, 
+a nie bezpośrednio na stringach Pythona. 
+hexdigest() konwertuje binarny hash na czytelną postać heksadecymalną
+'''
+
 def calculate_sha256(data_string):
     return hashlib.sha256(data_string.encode('utf-8')).hexdigest()
 
