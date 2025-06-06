@@ -3,7 +3,6 @@ from point import Point
 import hashlib, hmac
 from random import randint
 
-
 A = 0
 B = 7
 P = 2**256 - 2**32 - 977
@@ -47,6 +46,29 @@ class S256Point(Point):
         v = sig.r * s_inv % N  
         total = u * G + v * self  
         return total.x.num == sig.r  
+
+    def sec(self, compressed=True):
+        '''Zwraca postać binarną formatu SEC'''
+        if compressed:
+            if self.y.num % 2 == 0:
+                return b'\x02' + self.x.num.to_bytes(32, 'big')
+            else:
+                return b'\x03' + self.x.num.to_bytes(32, 'big')
+        else:
+            return b'\x04' + self.x.num.to_bytes(32, 'big') + \
+                self.y.num.to_bytes(32, 'big')
+
+    def hash160(self, compressed=True):
+        return hash160(self.sec(compressed))
+
+    def address(self, compressed=True, testnet=False):
+        '''Zwraca łańcuch adresu'''
+        h160 = self.hash160(compressed)
+        if testnet:
+            prefix = b'\x6f'
+        else:
+            prefix = b'\x00'
+        return encode_base58_checksum(prefix + h160)
 
 
 G = S256Point(
@@ -165,6 +187,19 @@ class Signature:
 
     def __repr__(self):
         return 'Podpis({:x},{:x})'.format(self.r, self.s)
+    
+    def der(self):
+        rbin = self.r.to_bytes(32, byteorder='big')
+        rbin = rbin.lstrip(b'\x00')
+        if rbin[0] & 0x80:
+            rbin = b'\x00' + rbin
+        result = bytes([2, len(rbin)]) + rbin  # <1>
+        sbin = self.s.to_bytes(32, byteorder='big')
+        sbin = sbin.lstrip(b'\x00')
+        if sbin[0] & 0x80:
+            sbin = b'\x00' + sbin
+        result += bytes([2, len(sbin)]) + sbin
+        return bytes([0x30, len(result)]) + result    
 
 class PrivateKey:
 
@@ -203,7 +238,20 @@ class PrivateKey:
                 return candidate  # <2>
             k = hmac.new(k, v + b'\x00', s256).digest()
             v = hmac.new(k, v, s256).digest()
- 
+
+    def wif(self, compressed=True, testnet=False):
+        secret_bytes = self.secret.to_bytes(32, 'big')
+        if testnet:
+            prefix = b'\xef'
+        else:
+            prefix = b'\x80'
+        if compressed:
+            suffix = b'\x01'
+        else:
+            suffix = b''
+        return encode_base58_checksum(prefix + secret_bytes + suffix)
+
+
 class PublicKey:
     def __init__(self, point):
         self.point = point  # Klucz publiczny jako punkt na krzywej
@@ -271,3 +319,43 @@ if __name__ == "__main__":
     run_all(SignatureTest)
     run_all(PrivateKeyTest)
 
+
+
+BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+
+def hash160(s):
+    '''sha256, a następnie ripemd160'''
+    return hashlib.new('ripemd160', hashlib.sha256(s).digest()).digest()  
+
+def hash256(s):
+    '''dwukrotne obliczenia skrótu sha256'''
+    return hashlib.sha256(hashlib.sha256(s).digest()).digest()
+
+def encode_base58(s):
+    count = 0
+    for c in s:  
+        if c == 0:
+            count += 1
+        else:
+            break
+    num = int.from_bytes(s, 'big')
+    prefix = '1' * count
+    result = ''
+    while num > 0:  
+        num, mod = divmod(num, 58)
+        result = BASE58_ALPHABET[mod] + result
+    return prefix + result  
+
+def encode_base58_checksum(b):
+    return encode_base58(b + hash256(b)[:4])
+
+def decode_base58(s):
+    num = 0
+    for c in s:
+        num *= 58
+        num += BASE58_ALPHABET.index(c)
+    combined = num.to_bytes(25, byteorder='big')
+    checksum = combined[-4:]
+    if hash256(combined[:-4])[:4] != checksum:
+        raise ValueError('zły adres: {} {}'.format(checksum, hash256(combined[:-4])[:4]))
+    return combined[1:-4]
