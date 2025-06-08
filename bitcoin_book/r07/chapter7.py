@@ -10,8 +10,8 @@ import hashlib
 from io import BytesIO
 from bitcoin_module.script import *
 
-# from bitcoin_module.tx import *
-from bitcoin_module.tx_segwit import *
+from bitcoin_module.tx import *
+# from bitcoin_module.tx_segwit import *
 
 import bitcoin_module.bech32_sipa as bech32_sipa
 import logging
