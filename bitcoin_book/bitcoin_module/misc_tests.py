@@ -8,7 +8,7 @@ from bitcoin_module.script import *
 from bitcoin_module.op import *
 from bitcoin_module.ecc import *
 
-
+import base64
 
 class HelperTest(TestCase):
 

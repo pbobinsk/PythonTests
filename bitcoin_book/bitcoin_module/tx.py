@@ -31,8 +31,8 @@ class TxFetcher:
     @classmethod
     def get_url(cls, testnet=False):
         if testnet:
-            # return 'https://blockstream.info/testnet/api/'
-            return 'https://mempool.space/testnet/api/'
+            return 'https://blockstream.info/testnet/api/'
+            # return 'https://mempool.space/testnet/api/'
         else:
             return 'https://blockstream.info/api/'
 
@@ -324,7 +324,7 @@ class Tx:
         LOGGER.info(f'inputs {input_sum} outputs {output_sum}')
         return input_sum - output_sum
 
-    def sig_hash(self, input_index):
+    def sig_hash(self, input_index, redeem_script=None):
         '''Zwraca liczbę całkowitą będącą skrótem, który musi zostać
         podpisany dla indeksu input_index (format Legacy).'''
         s = int_to_little_endian(self.version, 4)
@@ -334,12 +334,15 @@ class Tx:
             if i == input_index:
                 # Dla legacy P2PKH/P2MS, script_pubkey poprzedniego wyjścia
                 # Dla P2SH, redeem_script
-                # Ta metoda jest tylko dla legacy, więc pobieramy script_pubkey
-                try:
-                    script_sig_replacement = tx_in.script_pubkey(self.testnet)
-                except Exception as e: # Może być problem z TxFetcher
-                    LOGGER.error(f"Nie można pobrać script_pubkey dla wejścia {i} w sig_hash (legacy): {e}")
-                    raise ValueError(f"Nie można pobrać script_pubkey dla wejścia {i} w sig_hash (legacy). Upewnij się, że TxFetcher ma dane.")
+                if redeem_script:
+                    script_sig_replacement = redeem_script
+                else:
+                    # Ta metoda jest tylko dla legacy, więc pobieramy script_pubkey
+                    try:
+                        script_sig_replacement = tx_in.script_pubkey(self.testnet)
+                    except Exception as e: # Może być problem z TxFetcher
+                        LOGGER.error(f"Nie można pobrać script_pubkey dla wejścia {i} w sig_hash (legacy): {e}")
+                        raise ValueError(f"Nie można pobrać script_pubkey dla wejścia {i} w sig_hash (legacy). Upewnij się, że TxFetcher ma dane.")
             
             s += TxIn(
                 prev_tx=tx_in.prev_tx,
@@ -448,7 +451,13 @@ class Tx:
         # Logika dla Legacy (jak było)
         ### SEGWIT ZMIANA KONIEC ###
         script_pubkey = tx_in.script_pubkey(testnet=self.testnet)
-        z = self.sig_hash(input_index) # Używa starego sighash
+        if script_pubkey.is_p2sh_script_pubkey():
+            cmd = tx_in.script_sig.cmds[-1]
+            raw_redeem = encode_varint(len(cmd)) + cmd
+            redeem_script = Script.parse(BytesIO(raw_redeem))
+        else:
+            redeem_script = None
+        z = self.sig_hash(input_index, redeem_script) # Używa starego sighash
         combined = tx_in.script_sig + script_pubkey
         return combined.evaluate(z)
 
