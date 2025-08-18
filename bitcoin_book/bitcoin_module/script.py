@@ -169,6 +169,142 @@ class Script:
             and type(self.cmds[1]) == bytes and len(self.cmds[1]) == 20 \
             and self.cmds[2] == 0x87
 
+# wypisywanie skryptu w pełni, na potrzebu prezentacji
+
+    
+    # Słownik z nazwami opcodów potrzebny dla `repr_all`
+    OP_CODE_NAMES_ALL = {
+        0: 'OP_0', 76: 'OP_PUSHDATA1', 77: 'OP_PUSHDATA2', 78: 'OP_PUSHDATA4',
+        79: 'OP_1NEGATE', 81: 'OP_1', 82: 'OP_2', 83: 'OP_3', 84: 'OP_4', 85: 'OP_5',
+        86: 'OP_6', 87: 'OP_7', 88: 'OP_8', 89: 'OP_9', 90: 'OP_10', 91: 'OP_11',
+        92: 'OP_12', 93: 'OP_13', 94: 'OP_14', 95: 'OP_15', 96: 'OP_16', 97: 'OP_NOP',
+        99: 'OP_IF', 100: 'OP_NOTIF', 103: 'OP_ELSE', 104: 'OP_ENDIF', 105: 'OP_VERIFY',
+        106: 'OP_RETURN', 107: 'OP_TOALTSTACK', 108: 'OP_FROMALTSTACK', 
+        110: 'OP_2DUP', 115: 'OP_IFDUP',
+        116: 'OP_DEPTH', 117: 'OP_DROP', 118: 'OP_DUP', 119: 'OP_NIP', 120: 'OP_OVER',
+        121: 'OP_PICK', 122: 'OP_ROLL', 123: 'OP_ROT', 124: 'OP_SWAP', 125: 'OP_TUCK',
+        130: 'OP_SIZE', 135: 'OP_EQUAL', 136: 'OP_EQUALVERIFY', 139: 'OP_1ADD',
+        140: 'OP_1SUB', 143: 'OP_NEGATE', 144: 'OP_ABS', 145: 'OP_NOT',
+        146: 'OP_0NOTEQUAL', 147: 'OP_ADD', 148: 'OP_SUB', 154: 'OP_BOOLAND',
+        155: 'OP_BOOLOR', 156: 'OP_NUMEQUAL', 157: 'OP_NUMEQUALVERIFY',
+        158: 'OP_NUMNOTEQUAL', 159: 'OP_LESSTHAN', 160: 'OP_GREATERTHAN',
+        161: 'OP_LESSTHANOREQUAL', 162: 'OP_GREATERTHANOREQUAL', 163: 'OP_MIN',
+        164: 'OP_MAX', 165: 'OP_WITHIN', 166: 'OP_RIPEMD160', 167: 'OP_SHA1',
+        168: 'OP_SHA256', 169: 'OP_HASH160', 170: 'OP_HASH256', 172: 'OP_CHECKSIG',
+        173: 'OP_CHECKSIGVERIFY', 174: 'OP_CHECKMULTISIG', 175: 'OP_CHECKMULTISIGVERIFY',
+        176: 'OP_NOP1', 177: 'OP_CHECKLOCKTIMEVERIFY', 178: 'OP_CHECKSEQUENCEVERIFY',
+        179: 'OP_NOP4', 180: 'OP_NOP5', 181: 'OP_NOP6', 182: 'OP_NOP7', 183: 'OP_NOP8',
+        184: 'OP_NOP9', 185: 'OP_NOP10',
+    }
+    # Dodajemy dynamicznie nazwy dla OP_PUSHBYTES_1 do OP_PUSHBYTES_75
+    for i in range(1, 76):
+        OP_CODE_NAMES_ALL[i] = f'OP_PUSHBYTES_{i}'
+
+
+    @classmethod
+    def parse_all(cls, s):
+        """
+        Parsuje strumień i tworzy obiekt Script, zachowując
+        każdy opcode, w tym OP_PUSHBYTES, jako osobny element w liście cmds.
+        Jest to wersja "debugowa", naśladująca Blockstream.info.
+        """
+        length = read_varint(s)
+        cmds = []
+        count = 0
+        while count < length:
+            current = s.read(1)
+            count += 1
+            current_byte = current[0]
+            
+            # Dla wszystkich opcodów typu PUSH...
+            if 1 <= current_byte <= 75:  # OP_PUSHBYTES_N
+                # ...najpierw dodaj sam opcode jako int...
+                cmds.append(current_byte) 
+                # ...a potem dodaj dane jako bytes
+                n = current_byte
+                cmds.append(s.read(n))
+                count += n
+            elif current_byte == 76:  # OP_PUSHDATA1
+                cmds.append(current_byte)
+                data_length = little_endian_to_int(s.read(1))
+                cmds.append(s.read(data_length))
+                count += data_length + 1
+            elif current_byte == 77:  # OP_PUSHDATA2
+                cmds.append(current_byte)
+                data_length = little_endian_to_int(s.read(2))
+                cmds.append(s.read(data_length))
+                count += data_length + 2
+            # OP_PUSHDATA4 (0x4e lub 78) nie jest w oryginalnym kodzie, ale warto dodać
+            elif current_byte == 78: # OP_PUSHDATA4
+                cmds.append(current_byte)
+                data_length = little_endian_to_int(s.read(4))
+                cmds.append(s.read(data_length))
+                count += data_length + 4
+            else:
+                # Dla wszystkich innych opcodów, po prostu dodaj ich wartość int
+                op_code = current_byte
+                cmds.append(op_code)
+                
+        if count != length:
+            raise SyntaxError('niepowodzenie skryptu interpretującego')
+        
+        # Zwróć nowy obiekt Script z tą szczegółową listą komend
+        return cls(cmds)
+
+    def repr_all(self):
+        """
+        Zwraca reprezentację stringową skryptu, która pokazuje każdy
+        opcode, w tym OP_PUSHBYTES. Naśladuje Blockstream.info.
+        """
+        result = []
+        for cmd in self.cmds:
+            if isinstance(cmd, int):
+                # Jeśli element jest liczbą, to jest to opcode
+                if cmd in self.OP_CODE_NAMES_ALL:
+                    name = self.OP_CODE_NAMES_ALL[cmd]
+                else:
+                    name = f'OP_[{cmd}]'
+                result.append(name)
+            elif isinstance(cmd, bytes):
+                # Jeśli element jest bajtami, to są to dane
+                result.append(cmd.hex())
+            else:
+                # Na wszelki wypadek, jeśli w liście jest coś innego
+                result.append(str(cmd))
+        return ' '.join(result) 
+    
+    def print_all(self):
+        script_obj_standard = self
+        print(f"Lista komend: {script_obj_standard.cmds}")
+        print(f"Reprezentacja: {script_obj_standard}") # lub print(script_obj_standard.__repr__())
+        print("\n--- Szczegółowe parsowanie (jak Blockstream.info) ---")
+        # Musimy zresetować strumień, bo został już przeczytany
+         
+        # Użyj NOWEJ metody `parse_all`
+        script_obj_all = self
+        print(f"Lista komend: {script_obj_all.cmds}")
+        # Użyj NOWEJ metody `repr_all` do wyświetlenia
+        print(f"Reprezentacja: {script_obj_all.repr_all()}") 
+
+    @staticmethod
+    def print_all(script_hex):
+        stream = BytesIO(script_hex)
+        print("--- Standardowe parsowanie (logiczne) ---")
+        # Użyj standardowej metody `parse`
+        script_obj_standard = Script.parse(stream)
+        print(f"Lista komend: {script_obj_standard.cmds}")
+        print(f"Reprezentacja: {script_obj_standard}") # lub print(script_obj_standard.__repr__())
+        print("\n--- Szczegółowe parsowanie (jak Blockstream.info) ---")
+        # Musimy zresetować strumień, bo został już przeczytany
+        stream.seek(0) 
+        # Użyj NOWEJ metody `parse_all`
+        script_obj_all = Script.parse_all(stream)
+        print(f"Lista komend: {script_obj_all.cmds}")
+        # Użyj NOWEJ metody `repr_all` do wyświetlenia
+        print(f"Reprezentacja: {script_obj_all.repr_all()}") 
+
+# koniec 
+
 
 def toints(s):
     return [int.from_bytes(b, byteorder='little') for b in s]

@@ -352,7 +352,7 @@ class TxOut:
 
     @classmethod
     def parse(cls, s):
-         '''Interpretuje tx_output na początku strumienia bajtów;
+        '''Interpretuje tx_output na początku strumienia bajtów;
         zwraca obiekt TxOut
         '''
         # kwota (amount) jest 8-bajtową liczbą całkowitą w porządku little-endian

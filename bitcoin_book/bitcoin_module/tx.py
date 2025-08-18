@@ -23,8 +23,6 @@ from bitcoin_module.script import Script, p2pkh_script # Upewnij się, że p2pkh
 
 LOGGER = getLogger(__name__)
 
-
-# tag::source7[]
 class TxFetcher:
     cache = {}
 
@@ -47,24 +45,6 @@ class TxFetcher:
             except ValueError:
                 raise ValueError('unexpected response: {}'.format(response.text))
 
-            ### SEGWIT ZMIANA START ###
-            # Uwaga: oryginalny kod usuwał marker SegWit:
-            # if raw[4] == 0:
-            #     raw = raw[:4] + raw[6:]
-            #     tx = Tx.parse(BytesIO(raw), testnet=testnet)
-            #     tx.locktime = little_endian_to_int(raw[-4:])
-            # else:
-            #     tx = Tx.parse(BytesIO(raw), testnet=testnet)
-            # Aby poprawnie parsować transakcje SegWit z sieci, Tx.parse musi obsługiwać
-            # pełny format SegWit. Na razie pozostawiam logikę TxFetcher bez zmian,
-            # co oznacza, że pobrane transakcje SegWit będą traktowane jakby nie miały witness.
-            # Jeśli chcesz to zmienić, usuń warunek if raw[4] == 0... i przekaż całe `raw` do `Tx.parse`.
-            # Wtedy `Tx.parse` musi być w stanie obsłużyć pełny format.
-            # Poniższa zmiana w Tx.parse będzie obsługiwać SegWit, ale TxFetcher go "ukrywa".
-            # Dla tworzenia NOWYCH transakcji SegWit, to nie problem.
-
-            # Dla uproszczenia (i zachowania obecnego działania TxFetcher), jeśli marker jest obecny, usuwamy go.
-            # Ale zmodyfikowane Tx.parse będzie umiało obsłużyć ten marker, jeśli go dostanie.
             temp_s = BytesIO(raw)
             temp_s.read(4) # version
             is_segwit_tx_from_network = (temp_s.read(2) == b'\x00\x01') # marker + flag
@@ -160,7 +140,6 @@ class TxFetcher:
 
 
 class Tx:
-    ### SEGWIT ZMIANA START ###
     def __init__(self, version, tx_ins, tx_outs, locktime, testnet=False, segwit=False):
         self.version = version
         self.tx_ins = tx_ins
@@ -173,7 +152,6 @@ class Tx:
         self._hash_prevouts = None
         self._hash_sequence = None
         self._hash_outputs = None
-    ### SEGWIT ZMIANA KONIEC ###
 
     def __repr__(self):
         tx_ins_repr = ''.join([tx_in.__repr__() + '\n' for tx_in in self.tx_ins])
@@ -561,7 +539,6 @@ class Tx:
 
 
 class TxIn:
-    ### SEGWIT ZMIANA START ###
     def __init__(self, prev_tx, prev_index, script_sig=None, sequence=0xffffffff, witness=None): # Dodano witness
         self.prev_tx = prev_tx # bytes, big-endian (TXID)
         self.prev_index = prev_index
@@ -571,7 +548,6 @@ class TxIn:
             self.script_sig = script_sig
         self.sequence = sequence
         self.witness = witness if witness is not None else [] # Lista bajtów (elementów witness)
-    ### SEGWIT ZMIANA KONIEC ###
 
     def __repr__(self):
         base_repr = '{}:{}'.format(self.prev_tx.hex(), self.prev_index)
