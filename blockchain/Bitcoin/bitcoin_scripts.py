@@ -22,7 +22,7 @@ if __name__ == "__main__":
     # surowe bajty: a9 14 <20-bajtowy_hash> 87
 
     print('=====================')
-    print('Prosty skrypt: ', 'scriptPubKey: OP_HASH160 <hash160> OP_EQUAL')
+    print('Przykład 1: ', 'scriptPubKey: OP_HASH160 <hash160> OP_EQUAL')
 
     # Jakiś przykładowy hash160
     tr = b'Jakas transakcja'
@@ -46,15 +46,15 @@ if __name__ == "__main__":
 
 
     print('=====================')
-    print('Prosty skrypt: ', 'scriptPubKey: OP_DUP OP_DUP OP_MUL OP_ADD OP_6 OP_EQUAL')
+    print('Przykład 2: ', 'scriptPubKey: OP_DUP OP_DUP OP_MUL OP_ADD OP_6 OP_EQUAL')
     print('Unlock skrypt: ', 'scriptSig: OP_2')
     
     script_pubkey = Script([0x76, 0x76, 0x95, 0x93, 0x56, 0x87])
     script_sig = Script([0x52])
     combined_script = script_sig + script_pubkey
-    print(f'Ewaluacja: {combined_script.evaluate(0)}')
     Script.print_all(script_pubkey.serialize())
     Script.print_all(script_sig.serialize())
+    print(f'Ewaluacja: {combined_script.evaluate(0)}')
     
     print('Test https://scrypt.studio/')
     print('Locking Script: pubkey')
@@ -63,8 +63,8 @@ if __name__ == "__main__":
     
 
     print('=====================')
-    print('Skrypt testujący Hash160: ', 'script: OP_2DUP OP_EQUAL OP_NOT OP_VERIFY OP_SHA1 OP_SWAP OP_SHA1 OP_EQUAL')
-    print('Unlock skrypt: ', 'scriptSig: dwie wartości')
+    print('Przykład 3: ', 'script: OP_2DUP OP_EQUAL OP_NOT OP_VERIFY OP_SHA1 OP_SWAP OP_SHA1 OP_EQUAL')
+    print('Unlock skrypt: ', 'scriptSig: dwie różne/równe wartości')
 
 
     script_hex = '6e879169a77ca787'
@@ -81,14 +81,14 @@ if __name__ == "__main__":
     collision2 = bytes.fromhex(c2)
     script_sig = Script([collision1, collision2])
     combined_script = script_sig + script
-    print(f'Ewaluacja: {combined_script.evaluate(0)}')
     Script.print_all(script_sig.serialize())
+    print(f'Ewaluacja: {combined_script.evaluate(0)}')
     print('Test https://scrypt.studio/')
     print('Locking Script: pubkey')
     print('Unocking Script: sig')
     
     print('=====================')
-    print('Skrypt MultiSig: ')
+    print('Przykład 4: Skrypt MultiSig: ')
     print('Unlock skrypt: podpisy')
 
 
