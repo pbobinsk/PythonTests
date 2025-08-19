@@ -33,5 +33,9 @@ if __name__ == "__main__":
 
     print('Rozdział 9')
 
+    run_all(misc_tests.TxTest)
+    run_all(misc_tests.BlockTest)
+
+
 
    

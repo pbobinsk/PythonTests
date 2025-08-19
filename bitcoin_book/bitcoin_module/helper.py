@@ -163,3 +163,38 @@ def get_witness_programm(target_address):
     print(f"Zdekodowany program witness (h160) z adresu SegWit: {program_witness_bytes.hex()}")
 
     return program_witness_bytes
+
+def bits_to_target(bits):
+    '''Turns bits into a target (large 256-bit integer)'''
+    # last byte is exponent
+    # the first three bytes are the coefficient in little endian
+    # the formula is:
+    # coefficient * 256**(exponent-3)
+    raise NotImplementedError
+
+
+# tag::source1[]
+def target_to_bits(target):
+    '''Turns a target integer back into bits'''
+    raw_bytes = target.to_bytes(32, 'big')
+    raw_bytes = raw_bytes.lstrip(b'\x00')  # <1>
+    if raw_bytes[0] > 0x7f:  # <2>
+        exponent = len(raw_bytes) + 1
+        coefficient = b'\x00' + raw_bytes[:2]
+    else:
+        exponent = len(raw_bytes)  # <3>
+        coefficient = raw_bytes[:3]  # <4>
+    new_bits = coefficient[::-1] + bytes([exponent])  # <5>
+    return new_bits
+# end::source1[]
+
+
+def calculate_new_bits(previous_bits, time_differential):
+    '''Calculates the new bits given
+    a 2016-block time differential and the previous bits'''
+    # if the time differential is greater than 8 weeks, set to 8 weeks
+    # if the time differential is less than half a week, set to half a week
+    # the new target is the previous target * time differential / two weeks
+    # if the new target is bigger than MAX_TARGET, set to MAX_TARGET
+    # convert the new target to bits
+    raise NotImplementedError

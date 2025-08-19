@@ -1,7 +1,7 @@
 from io import BytesIO
 from unittest import TestCase
 
-from helper import (
+from bitcoin_module.helper import (
     bits_to_target,
     hash256,
     int_to_little_endian,

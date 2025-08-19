@@ -7,6 +7,8 @@ from bitcoin_module.tx import *
 from bitcoin_module.script import *
 from bitcoin_module.op import *
 from bitcoin_module.ecc import *
+from bitcoin_module.block import *
+
 
 import base64
 
@@ -168,6 +170,21 @@ class TxTest(TestCase):
         want = '010000000199a24308080ab26e6fb65c4eccfadf76749bb5bfa8cb08f291320b3c21e56f0d0d0000006b4830450221008ed46aa2cf12d6d81065bfabe903670165b538f65ee9a3385e6327d80c66d3b502203124f804410527497329ec4715e18558082d489b218677bd029e7fa306a72236012103935581e52c354cd2f484fe8ed83af7a3097005b2f9c60bff71d35bd795f54b67ffffffff02408af701000000001976a914d52ad7ca9b3d096a38e752c2018e6fbc40cdf26f88ac80969800000000001976a914507b27411ccf7f16f10297de6cef3f291623eddf88ac00000000'
         self.assertEqual(tx_obj.serialize().hex(), want)
 
+    def test_is_coinbase(self):
+        raw_tx = bytes.fromhex('01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff5e03d71b07254d696e656420627920416e74506f6f6c20626a31312f4542312f4144362f43205914293101fabe6d6d678e2c8c34afc36896e7d9402824ed38e856676ee94bfdb0c6c4bcd8b2e5666a0400000000000000c7270000a5e00e00ffffffff01faf20b58000000001976a914338c84849423992471bffb1a54a8d9b1d69dc28a88ac00000000')
+        stream = BytesIO(raw_tx)
+        tx = Tx.parse(stream)
+        self.assertTrue(tx.is_coinbase())
+
+    def test_coinbase_height(self):
+        raw_tx = bytes.fromhex('01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff5e03d71b07254d696e656420627920416e74506f6f6c20626a31312f4542312f4144362f43205914293101fabe6d6d678e2c8c34afc36896e7d9402824ed38e856676ee94bfdb0c6c4bcd8b2e5666a0400000000000000c7270000a5e00e00ffffffff01faf20b58000000001976a914338c84849423992471bffb1a54a8d9b1d69dc28a88ac00000000')
+        stream = BytesIO(raw_tx)
+        tx = Tx.parse(stream)
+        self.assertEqual(tx.coinbase_height(), 465879)
+        raw_tx = bytes.fromhex('0100000001813f79011acb80925dfe69b3def355fe914bd1d96a3f5f71bf8303c6a989c7d1000000006b483045022100ed81ff192e75a3fd2304004dcadb746fa5e24c5031ccfcf21320b0277457c98f02207a986d955c6e0cb35d446a89d3f56100f4d7f67801c31967743a9c8e10615bed01210349fc4e631e3624a545de3f89f5d8684c7b8138bd94bdd531d2e213bf016b278afeffffff02a135ef01000000001976a914bc3b654dca7e56b04dca18f2566cdaf02e8d9ada88ac99c39800000000001976a9141c4bc762dd5423e332166702cb75f40df79fea1288ac19430600')
+        stream = BytesIO(raw_tx)
+        tx = Tx.parse(stream)
+        self.assertIsNone(tx.coinbase_height())
 
 class OpTest(TestCase):
 
@@ -211,3 +228,83 @@ class ScriptTest(TestCase):
         script_pubkey = BytesIO(bytes.fromhex(want))
         script = Script.parse(script_pubkey)
         self.assertEqual(script.serialize().hex(), want)
+
+class BlockTest(TestCase):
+
+    def test_parse(self):
+        block_raw = bytes.fromhex('020000208ec39428b17323fa0ddec8e887b4a7c53b8c0a0a220cfd0000000000000000005b0750fce0a889502d40508d39576821155e9c9e3f5c3157f961db38fd8b25be1e77a759e93c0118a4ffd71d')
+        stream = BytesIO(block_raw)
+        block = Block.parse(stream)
+        self.assertEqual(block.version, 0x20000002)
+        want = bytes.fromhex('000000000000000000fd0c220a0a8c3bc5a7b487e8c8de0dfa2373b12894c38e')
+        self.assertEqual(block.prev_block, want)
+        want = bytes.fromhex('be258bfd38db61f957315c3f9e9c5e15216857398d50402d5089a8e0fc50075b')
+        self.assertEqual(block.merkle_root, want)
+        self.assertEqual(block.timestamp, 0x59a7771e)
+        self.assertEqual(block.bits, bytes.fromhex('e93c0118'))
+        self.assertEqual(block.nonce, bytes.fromhex('a4ffd71d'))
+
+    def test_serialize(self):
+        block_raw = bytes.fromhex('020000208ec39428b17323fa0ddec8e887b4a7c53b8c0a0a220cfd0000000000000000005b0750fce0a889502d40508d39576821155e9c9e3f5c3157f961db38fd8b25be1e77a759e93c0118a4ffd71d')
+        stream = BytesIO(block_raw)
+        block = Block.parse(stream)
+        self.assertEqual(block.serialize(), block_raw)
+
+    def test_hash(self):
+        block_raw = bytes.fromhex('020000208ec39428b17323fa0ddec8e887b4a7c53b8c0a0a220cfd0000000000000000005b0750fce0a889502d40508d39576821155e9c9e3f5c3157f961db38fd8b25be1e77a759e93c0118a4ffd71d')
+        stream = BytesIO(block_raw)
+        block = Block.parse(stream)
+        self.assertEqual(block.hash(), bytes.fromhex('0000000000000000007e9e4c586439b0cdbe13b1370bdd9435d76a644d047523'))
+
+    def test_bip9(self):
+        block_raw = bytes.fromhex('020000208ec39428b17323fa0ddec8e887b4a7c53b8c0a0a220cfd0000000000000000005b0750fce0a889502d40508d39576821155e9c9e3f5c3157f961db38fd8b25be1e77a759e93c0118a4ffd71d')
+        stream = BytesIO(block_raw)
+        block = Block.parse(stream)
+        self.assertTrue(block.bip9())
+        block_raw = bytes.fromhex('0400000039fa821848781f027a2e6dfabbf6bda920d9ae61b63400030000000000000000ecae536a304042e3154be0e3e9a8220e5568c3433a9ab49ac4cbb74f8df8e8b0cc2acf569fb9061806652c27')
+        stream = BytesIO(block_raw)
+        block = Block.parse(stream)
+        self.assertFalse(block.bip9())
+
+    def test_bip91(self):
+        block_raw = bytes.fromhex('1200002028856ec5bca29cf76980d368b0a163a0bb81fc192951270100000000000000003288f32a2831833c31a25401c52093eb545d28157e200a64b21b3ae8f21c507401877b5935470118144dbfd1')
+        stream = BytesIO(block_raw)
+        block = Block.parse(stream)
+        self.assertTrue(block.bip91())
+        block_raw = bytes.fromhex('020000208ec39428b17323fa0ddec8e887b4a7c53b8c0a0a220cfd0000000000000000005b0750fce0a889502d40508d39576821155e9c9e3f5c3157f961db38fd8b25be1e77a759e93c0118a4ffd71d')
+        stream = BytesIO(block_raw)
+        block = Block.parse(stream)
+        self.assertFalse(block.bip91())
+
+    def test_bip141(self):
+        block_raw = bytes.fromhex('020000208ec39428b17323fa0ddec8e887b4a7c53b8c0a0a220cfd0000000000000000005b0750fce0a889502d40508d39576821155e9c9e3f5c3157f961db38fd8b25be1e77a759e93c0118a4ffd71d')
+        stream = BytesIO(block_raw)
+        block = Block.parse(stream)
+        self.assertTrue(block.bip141())
+        block_raw = bytes.fromhex('0000002066f09203c1cf5ef1531f24ed21b1915ae9abeb691f0d2e0100000000000000003de0976428ce56125351bae62c5b8b8c79d8297c702ea05d60feabb4ed188b59c36fa759e93c0118b74b2618')
+        stream = BytesIO(block_raw)
+        block = Block.parse(stream)
+        self.assertFalse(block.bip141())
+
+    def test_target(self):
+        block_raw = bytes.fromhex('020000208ec39428b17323fa0ddec8e887b4a7c53b8c0a0a220cfd0000000000000000005b0750fce0a889502d40508d39576821155e9c9e3f5c3157f961db38fd8b25be1e77a759e93c0118a4ffd71d')
+        stream = BytesIO(block_raw)
+        block = Block.parse(stream)
+        self.assertEqual(block.target(), 0x13ce9000000000000000000000000000000000000000000)
+        self.assertEqual(int(block.difficulty()), 888171856257)
+
+    def test_difficulty(self):
+        block_raw = bytes.fromhex('020000208ec39428b17323fa0ddec8e887b4a7c53b8c0a0a220cfd0000000000000000005b0750fce0a889502d40508d39576821155e9c9e3f5c3157f961db38fd8b25be1e77a759e93c0118a4ffd71d')
+        stream = BytesIO(block_raw)
+        block = Block.parse(stream)
+        self.assertEqual(int(block.difficulty()), 888171856257)
+
+    def test_check_pow(self):
+        block_raw = bytes.fromhex('04000000fbedbbf0cfdaf278c094f187f2eb987c86a199da22bbb20400000000000000007b7697b29129648fa08b4bcd13c9d5e60abb973a1efac9c8d573c71c807c56c3d6213557faa80518c3737ec1')
+        stream = BytesIO(block_raw)
+        block = Block.parse(stream)
+        self.assertTrue(block.check_pow())
+        block_raw = bytes.fromhex('04000000fbedbbf0cfdaf278c094f187f2eb987c86a199da22bbb20400000000000000007b7697b29129648fa08b4bcd13c9d5e60abb973a1efac9c8d573c71c807c56c3d6213557faa80518c3737ec0')
+        stream = BytesIO(block_raw)
+        block = Block.parse(stream)
+        self.assertFalse(block.check_pow())
