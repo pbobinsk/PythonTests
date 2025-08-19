@@ -131,19 +131,19 @@ class Script:
                 
                 if cmd in (99, 100):  # <4>
                     if not operation(stack, cmds):
-                        LOGGER.info('zła op: {}'.format(OP_CODE_NAMES[cmd]))
+                        LOGGER.info('zła op 1: {}'.format(OP_CODE_NAMES[cmd]))
                         return False
                 elif cmd in (107, 108):  # <5>
                     if not operation(stack, altstack):
-                        LOGGER.info('zła op: {}'.format(OP_CODE_NAMES[cmd]))
+                        LOGGER.info('zła op 2: {}'.format(OP_CODE_NAMES[cmd]))
                         return False
                 elif cmd in (172, 173, 174, 175):  # <6>
                     if not operation(stack, z):
-                        LOGGER.info('zła op: {}'.format(OP_CODE_NAMES[cmd]))
+                        LOGGER.info('zła op 3: {}'.format(OP_CODE_NAMES[cmd]))
                         return False
                 else:
                     if not operation(stack):
-                        LOGGER.info('zła op: {}'.format(OP_CODE_NAMES[cmd]))
+                        LOGGER.info('zła op 4: {}'.format(OP_CODE_NAMES[cmd]))
                         return False
             else:
                 LOGGER.info('cmd not int '+ str(cmd))
@@ -185,7 +185,7 @@ class Script:
         121: 'OP_PICK', 122: 'OP_ROLL', 123: 'OP_ROT', 124: 'OP_SWAP', 125: 'OP_TUCK',
         130: 'OP_SIZE', 135: 'OP_EQUAL', 136: 'OP_EQUALVERIFY', 139: 'OP_1ADD',
         140: 'OP_1SUB', 143: 'OP_NEGATE', 144: 'OP_ABS', 145: 'OP_NOT',
-        146: 'OP_0NOTEQUAL', 147: 'OP_ADD', 148: 'OP_SUB', 154: 'OP_BOOLAND',
+        146: 'OP_0NOTEQUAL', 147: 'OP_ADD', 148: 'OP_SUB', 149: 'OP_MUL', 154: 'OP_BOOLAND',
         155: 'OP_BOOLOR', 156: 'OP_NUMEQUAL', 157: 'OP_NUMEQUALVERIFY',
         158: 'OP_NUMNOTEQUAL', 159: 'OP_LESSTHAN', 160: 'OP_GREATERTHAN',
         161: 'OP_LESSTHANOREQUAL', 162: 'OP_GREATERTHANOREQUAL', 163: 'OP_MIN',
@@ -273,34 +273,19 @@ class Script:
                 result.append(str(cmd))
         return ' '.join(result) 
     
-    def print_all(self):
-        script_obj_standard = self
-        print(f"Lista komend: {script_obj_standard.cmds}")
-        print(f"Reprezentacja: {script_obj_standard}") # lub print(script_obj_standard.__repr__())
-        print("\n--- Szczegółowe parsowanie (jak Blockstream.info) ---")
-        # Musimy zresetować strumień, bo został już przeczytany
-         
-        # Użyj NOWEJ metody `parse_all`
-        script_obj_all = self
-        print(f"Lista komend: {script_obj_all.cmds}")
-        # Użyj NOWEJ metody `repr_all` do wyświetlenia
-        print(f"Reprezentacja: {script_obj_all.repr_all()}") 
-
     @staticmethod
     def print_all(script_hex):
+        print(f'---Skrypt---:{script_hex.hex()}')
         stream = BytesIO(script_hex)
         print("--- Standardowe parsowanie (logiczne) ---")
-        # Użyj standardowej metody `parse`
         script_obj_standard = Script.parse(stream)
-        print(f"Lista komend: {script_obj_standard.cmds}")
-        print(f"Reprezentacja: {script_obj_standard}") # lub print(script_obj_standard.__repr__())
-        print("\n--- Szczegółowe parsowanie (jak Blockstream.info) ---")
+        print(f"Liczba komend: {len(script_obj_standard.cmds)}")
+        print(f"Reprezentacja: {script_obj_standard}")
+        print("--- Szczegółowe parsowanie (jak Blockstream.info) ---")
         # Musimy zresetować strumień, bo został już przeczytany
         stream.seek(0) 
-        # Użyj NOWEJ metody `parse_all`
         script_obj_all = Script.parse_all(stream)
-        print(f"Lista komend: {script_obj_all.cmds}")
-        # Użyj NOWEJ metody `repr_all` do wyświetlenia
+        print(f"Liczba komend: {len(script_obj_all.cmds)}")
         print(f"Reprezentacja: {script_obj_all.repr_all()}") 
 
 # koniec 
