@@ -3,7 +3,7 @@ from io import BytesIO
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../bitcoin_book")))
 from bitcoin_module.tx import TxFetcher
 from bitcoin_module.script import Script 
-from bitcoin_module.helper import encode_varint, hash160, int_to_little_endian, SIGHASH_ALL
+from bitcoin_module.helper import encode_varint, hash160, int_to_little_endian, SIGHASH_ALL, hash256
 from bitcoin_module.ecc import PrivateKey
 
 import logging
@@ -57,8 +57,8 @@ if __name__ == "__main__":
     print(f'Ewaluacja: {combined_script.evaluate(0)}')
     
     print('Test https://scrypt.studio/')
-    print('Locking Script: pubkey')
-    print('Unocking Script: sig')
+    print('Locking Script:')
+    print('Unocking Script:')
     
     
 
@@ -84,11 +84,110 @@ if __name__ == "__main__":
     Script.print_all(script_sig.serialize())
     print(f'Ewaluacja: {combined_script.evaluate(0)}')
     print('Test https://scrypt.studio/')
-    print('Locking Script: pubkey')
-    print('Unocking Script: sig')
+    print('Locking Script:')
+    print('Unocking Script:')
     
     print('=====================')
-    print('Przykład 4: Skrypt MultiSig: ')
+    print('Przykład 4: Skrypt P2PK: <klucz_publiczny> OP_CHECKSIG')
+    print('Unlock skrypt: podpis')
+
+    private_key = PrivateKey(5001)
+    public_key_sec = private_key.point.sec(compressed=True)
+    print("--- Dane Uczestnika ---")
+    print(f"Klucz Publiczny (hex): {public_key_sec.hex()}")
+
+    locking_script_cmds = [
+        public_key_sec,
+        0xac  # OP_CHECKSIG
+    ]
+    locking_script = Script(locking_script_cmds)
+    print(f"\nLocking Script (P2PK, scriptPubKey): {locking_script}")
+
+    z = int.from_bytes(b'Transakcja P2PK do podpisania', 'big')
+    podpis = private_key.sign(z)
+    podpis_der_sighash = podpis.der() + int_to_little_endian(SIGHASH_ALL, 1)
+
+    print(f"\nPodpis (DER+SIGHASH w hex): {podpis_der_sighash.hex()}")
+
+    unlocking_script_cmds = [
+        podpis_der_sighash,
+    ]
+    unlocking_script = Script(unlocking_script_cmds)
+    print(f"Unlocking Script (scriptSig): {unlocking_script}")
+
+    print("\n--- Rozpoczynam Weryfikację Skryptu P2PK ---")
+    combined_script = unlocking_script + locking_script
+    print(f"\nPołączony skrypt do wykonania: {combined_script}")
+    evaluation_result = combined_script.evaluate(z)
+    print(f"\nWynik ewaluacji: {evaluation_result}")
+
+    if evaluation_result:
+        print("\n\033[92mSUKCES! Weryfikacja P2PK zakończona pomyślnie.\033[0m")
+    else:
+        print("\n\033[91mBŁĄD: Weryfikacja P2PK nie powiodła się.\033[0m")
+
+    print('Test https://scrypt.studio/')
+    print('Locking Script: ')
+    print('Unocking Script: ')
+    
+    print('=====================')
+    print('Przykład 5: Skrypt P2PKH: OP_DUP OP_HASH160 <hash160(pubKey)> OP_EQUALVERIFY OP_CHECKSIG')
+    print('Unlock skrypt: hash podpisu')
+
+    private_key = PrivateKey(501)
+    public_key_sec = private_key.point.sec(compressed=True)
+    public_key_hash160 = hash160(public_key_sec)
+
+    print("--- Dane Uczestnika ---")
+    print(f"Klucz Publiczny (hex): {public_key_sec.hex()}")
+    print(f"Hash160 Klucza Publicznego (hex): {public_key_hash160.hex()}")
+
+    # Skrypt P2PKH: OP_DUP OP_HASH160 <hash160(pubKey)> OP_EQUALVERIFY OP_CHECKSIG
+    locking_script_cmds = [
+        0x76,                   # OP_DUP
+        0xa9,                   # OP_HASH160
+        public_key_hash160,     # Wciśnięcie 20-bajtowego hasha
+        0x88,                   # OP_EQUALVERIFY
+        0xac                    # OP_CHECKSIG
+    ]
+    locking_script = Script(locking_script_cmds)
+    print(f"\nLocking Script (P2PKH, scriptPubKey): {locking_script}")
+
+    wiadomosc = b'To jest transakcja do weryfikacji P2PKH'
+    hash_wiadomosci = hash256(wiadomosc)
+    z = int.from_bytes(hash_wiadomosci, 'big')
+    podpis = private_key.sign(z)
+
+    podpis_der_sighash = podpis.der() + int_to_little_endian(SIGHASH_ALL, 1)
+    print(f"\nPodpis (DER+SIGHASH w hex): {podpis_der_sighash.hex()}")
+
+    # scriptSig dla P2PKH: <podpis> <klucz_publiczny>
+    unlocking_script_cmds = [
+        podpis_der_sighash,
+        public_key_sec
+    ]
+    unlocking_script = Script(unlocking_script_cmds)
+    print(f"Unlocking Script (scriptSig): {unlocking_script}")
+
+    print("\n--- Rozpoczynam Weryfikację Skryptu P2PKH ---")
+    combined_script = unlocking_script + locking_script
+    print(f"\nPołączony skrypt do wykonania: {combined_script}")
+
+    evaluation_result = combined_script.evaluate(z)
+    print(f"\nWynik ewaluacji: {evaluation_result}")
+
+    if evaluation_result:
+        print("\n\033[92mSUKCES! Weryfikacja P2PKH zakończona pomyślnie.\033[0m")
+    else:
+        print("\n\033[91mBŁĄD: Weryfikacja P2PKH nie powiodła się.\033[0m")
+
+    print('Test https://scrypt.studio/')
+    print('Locking Script: ')
+    print('Unocking Script: ')
+
+
+    print('=====================')
+    print('Przykład 6: Skrypt MultiSig: ')
     print('Unlock skrypt: podpisy')
 
 
